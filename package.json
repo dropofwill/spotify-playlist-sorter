@@ -1,0 +1,30 @@
+{
+  "name": "upm-ui",
+  "version": "1.0.0",
+  "description": "Prototype exploring the UI for a Universal Playlist Manager app",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dropofwill/upm-ui.git"
+  },
+  "keywords": [
+    "playlist",
+    "api",
+    "backbone"
+  ],
+  "author": "Will Paul",
+  "license": "BSD 3",
+  "bugs": {
+    "url": "https://github.com/dropofwill/upm-ui/issues"
+  },
+  "homepage": "https://github.com/dropofwill/upm-ui",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-coffee": "^0.13.0",
+    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}
