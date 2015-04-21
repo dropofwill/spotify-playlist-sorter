@@ -44,7 +44,7 @@ module.exports = function(grunt) {
 
     watch: {
       js: {
-        files: 'src/*.coffee',
+        files: ['src/*.coffee', 'styles/*.scss'],
         tasks: ['dev']
       }
     }
