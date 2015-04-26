@@ -43,7 +43,7 @@ header {
   padding: 1.5em;
 }
 header > div {
-  max-width: 55em;
+  max-width: 60em;
   margin: 2em auto;
 }
 header h1 {
@@ -72,7 +72,7 @@ hr {
 section {
   background: #ffffff;
 }
-section > div {
-  max-width: 55em;
+section > * {
+  max-width: 60em;
   margin: 0 auto;
 }

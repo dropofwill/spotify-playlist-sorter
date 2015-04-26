@@ -68,7 +68,7 @@ header {
   padding: 1.5em;
 
   & > div {
-    max-width: 55em;
+    max-width: 60em;
     margin: 2em auto;
   }
 
@@ -99,8 +99,8 @@ hr {
 section {
   background: #ffffff;
 
-  & > div {
-    max-width: 55em;
+  & > * {
+    max-width: 60em;
     margin: 0 auto;
   }
 }
