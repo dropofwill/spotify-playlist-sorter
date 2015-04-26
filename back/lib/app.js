@@ -13,11 +13,13 @@
 
   app = express();
 
-  app.set('views', './views');
+  app.set('views', '../../views');
 
   app.set('view engine', 'jade');
 
   app.disable('x-powered-by');
+
+  app.use(express["static"]("front"));
 
   server = app.listen(http_port, function(err) {
     if (err) {

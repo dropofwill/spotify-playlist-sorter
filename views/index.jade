@@ -1,148 +1,148 @@
-var page = 'Project';
-extends ./base.jade
+extend ./base.jade
 
-table(role='grid')
-  thead
-    tr(role='row')
-      th(aria-controls='song-table', rowspan='1', colspan='1') #
-      th(aria-controls='song-table', rowspan='1', colspan='1') Title
-      th(aria-controls='song-table', rowspan='1', colspan='1') Artist
-      th(aria-controls='song-table', rowspan='1', colspan='1') BPM
-      th(aria-controls='song-table', rowspan='1', colspan='1') Energy
-      th(aria-controls='song-table', rowspan='1', colspan='1') Dance
-      th(aria-controls='song-table', rowspan='1', colspan='1') Loud
-      th(aria-controls='song-table', rowspan='1', colspan='1') Length
-      th(aria-controls='song-table', rowspan='1', colspan='1') Acoustic
-      th(aria-controls='song-table', rowspan='1', colspan='1') Valence
-      th(aria-controls='song-table', rowspan='1', colspan='1') Pop.
+block content
+  table(role='grid')
+    thead
+      tr(role='row')
+        th(aria-controls='song-table', rowspan='1', colspan='1') #
+        th(aria-controls='song-table', rowspan='1', colspan='1') Title
+        th(aria-controls='song-table', rowspan='1', colspan='1') Artist
+        th(aria-controls='song-table', rowspan='1', colspan='1') BPM
+        th(aria-controls='song-table', rowspan='1', colspan='1') Energy
+        th(aria-controls='song-table', rowspan='1', colspan='1') Dance
+        th(aria-controls='song-table', rowspan='1', colspan='1') Loud
+        th(aria-controls='song-table', rowspan='1', colspan='1') Length
+        th(aria-controls='song-table', rowspan='1', colspan='1') Acoustic
+        th(aria-controls='song-table', rowspan='1', colspan='1') Valence
+        th(aria-controls='song-table', rowspan='1', colspan='1') Pop.
 
-  tbody
-    tr(role='row')
-      td 5
-      td Walcott
-      td Vampire Weekend
-      td 81
-      td 56
-      td 48
-      td -5
-      td 3:41
-      td 55
-      td 61
-      td 37
-    tr(role='row')
-      td 11
-      td Next Year
-      td Two Door Cinema Club
-      td 127
-      td 79
-      td 56
-      td -6
-      td 4:11
-      td 0
-      td 47
-      td 50
-    tr(role='row')
-      td 25
-      td Only Waiting
-      td The Travelling Band
-      td 104
-      td 47
-      td 47
-      td -10
-      td 3:14
-      td 33
-      td 11
-      td 19
-    tr(role='row')
-      td 15
-      td Reptilia
-      td The Strokes
-      td 158
-      td 65
-      td 49
-      td -5
-      td 3:38
-      td 0
-      td 78
-      td 63
-    tr(role='row')
-      td 40
-      td Be Brave
-      td The Strange Boys
-      td -5
-      td 2:58
-      td 45
-      td 96
-      td 36
-    tr(role='row')
-      td 45
-      td Who Needs You
-      td The Orwells
-      td 104
-      td 88
-      td 49
-      td -5
-      td 3:18
-      td 0
-      td 64
-      td 61
-    tr(role='row')
-      td 42
-      td Bloodbuzz Ohio
-      td The National
-      td 157
-      td 80
-      td 40
-      td -8
-      td 4:35
-      td 5
-      td 65
-      td 51
-    tr.even(role='row')
-      td 43
-      td All These Things That I&apos;ve Done
-      td The Killers
-      td 118
-      td 74
-      td 56
-      td -6
-      td 5:01
-      td 0
-      td 21
-      td 59
-    tr(role='row')
-      td 23
-      td Love Action (I Believe in Love) - 2002 - Remaster
-      td The Human League
-      td 122
-      td 53
-      td 70
-      td -12
-      td 4:59
-      td 10
-      td 76
-      td 29
-    tr(role='row')
-      td 4
-      td Green Fields
-      td The Good, The Bad and The Queen
-      td 87
-      td 50
-      td 24
-      td -9
-      td 2:30
-      td 27
-      td 33
-      td 26
-    tr(role='row')
-      td 32
-      td Frankie&apos;s Gun!
-      td The Felice Brothers
-      td 78
-      td 74
-      td 39
-      td -4
-      td 4:06
-      td 57
-      td 58
-      td 37
+    tbody
+      tr(role='row')
+        td 5
+        td Walcott
+        td Vampire Weekend
+        td 81
+        td 56
+        td 48
+        td -5
+        td 3:41
+        td 55
+        td 61
+        td 37
+      tr(role='row')
+        td 11
+        td Next Year
+        td Two Door Cinema Club
+        td 127
+        td 79
+        td 56
+        td -6
+        td 4:11
+        td 0
+        td 47
+        td 50
+      tr(role='row')
+        td 25
+        td Only Waiting
+        td The Travelling Band
+        td 104
+        td 47
+        td 47
+        td -10
+        td 3:14
+        td 33
+        td 11
+        td 19
+      tr(role='row')
+        td 15
+        td Reptilia
+        td The Strokes
+        td 158
+        td 65
+        td 49
+        td -5
+        td 3:38
+        td 0
+        td 78
+        td 63
+      tr(role='row')
+        td 40
+        td Be Brave
+        td The Strange Boys
+        td -5
+        td 2:58
+        td 45
+        td 96
+        td 36
+      tr(role='row')
+        td 45
+        td Who Needs You
+        td The Orwells
+        td 104
+        td 88
+        td 49
+        td -5
+        td 3:18
+        td 0
+        td 64
+        td 61
+      tr(role='row')
+        td 42
+        td Bloodbuzz Ohio
+        td The National
+        td 157
+        td 80
+        td 40
+        td -8
+        td 4:35
+        td 5
+        td 65
+        td 51
+      tr.even(role='row')
+        td 43
+        td All These Things That I&apos;ve Done
+        td The Killers
+        td 118
+        td 74
+        td 56
+        td -6
+        td 5:01
+        td 0
+        td 21
+        td 59
+      tr(role='row')
+        td 23
+        td Love Action (I Believe in Love) - 2002 - Remaster
+        td The Human League
+        td 122
+        td 53
+        td 70
+        td -12
+        td 4:59
+        td 10
+        td 76
+        td 29
+      tr(role='row')
+        td 4
+        td Green Fields
+        td The Good, The Bad and The Queen
+        td 87
+        td 50
+        td 24
+        td -9
+        td 2:30
+        td 27
+        td 33
+        td 26
+      tr(role='row')
+        td 32
+        td Frankie&apos;s Gun!
+        td The Felice Brothers
+        td 78
+        td 74
+        td 39
+        td -4
+        td 4:06
+        td 57
+        td 58
+        td 37
