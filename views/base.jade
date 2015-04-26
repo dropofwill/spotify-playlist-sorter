@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    block title
+      if page
+        title Universal Playlist Manager Prototype - #{page}
+      else
+        title Universal Playlist Manager Prototype
+
+    link(rel='stylesheet', href='front/styles/main.css')
+
+  body
+    header
+      div
+        h1 upm
+        h2 a universal playlist manager to organize your cloud-based music libraries
+
+    block content
+      section.content
+
+    script(type='text/javascript', src='front/js/main.js')
