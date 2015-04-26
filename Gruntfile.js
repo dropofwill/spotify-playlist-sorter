@@ -54,5 +54,5 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('dev', [ 'coffee:compile', 'sass' ]);
+  grunt.registerTask('dev', [ 'coffee:compile', 'coffeeify:compile', 'sass' ]);
 };

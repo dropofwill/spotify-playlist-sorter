@@ -1,1 +1,4 @@
-console.log("yolo")
+$ = require('jquery')
+_ = require('lodash')
+
+console.log(_)
