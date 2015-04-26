@@ -11,7 +11,7 @@
 
   fs = require('fs');
 
-  http_port = 3000;
+  http_port = process.env.PORT || 3000;
 
   app = express();
 

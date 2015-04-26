@@ -4,8 +4,8 @@ require('coffee-script/register')
 express   = require('express')
 route     = require('./router')
 path      = require('path')
-fs        = require('fs');
-http_port = 3000
+fs        = require('fs')
+http_port = process.env.PORT || 3000
 
 app = express()
 app.set('views', path.resolve(path.join(__dirname, "../../views/")))
