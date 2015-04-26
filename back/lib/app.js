@@ -1,13 +1,17 @@
 (function() {
-  var express, http_port, path, route, server;
+  var app, express, http_port, path, route, server;
+
+  require('coffee-script/register');
 
   express = require('express');
 
-  route = require('./router.coffee');
+  route = require('./router');
 
   path = require('path');
 
   http_port = 3000;
+
+  app = express();
 
   app.set('views', './views');
 
@@ -15,7 +19,7 @@
 
   app.disable('x-powered-by');
 
-  server = app.listen(config.http_port, function(err) {
+  server = app.listen(http_port, function(err) {
     if (err) {
       return console.log(err);
     } else {

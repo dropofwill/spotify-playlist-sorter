@@ -1,13 +1,16 @@
+require('coffee-script/register')
 express   = require('express')
-route     = require('./router.coffee')
+route     = require('./router')
 path      = require('path')
 http_port = 3000
+
+app = express()
 
 app.set('views', './views')
 app.set('view engine', 'jade')
 app.disable('x-powered-by')
 
-server = app.listen(config.http_port, (err) ->
+server = app.listen(http_port, (err) ->
 	if(err)
 		console.log(err)
 	else
