@@ -1,17 +1,33 @@
 module.exports = function(grunt) {
   [ 'grunt-contrib-coffee',
+    'grunt-coffeeify',
     'grunt-contrib-sass',
     'grunt-contrib-watch' ].forEach(grunt.loadNpmTasks);
 
   grunt.initConfig({
+    // Merge all frontend coffeescript and javascript together into one main.js
+    coffeeify: {
+      compile: {
+        options: {
+          debug: true
+        },
+        files: [{
+           // compile and concat into single file
+          src: ['front/coffee/*.coffee'],
+          dest: 'front/js/main.js'
+        }]
+      },
+    },
+
+    // On the backend leave a 1:1 mapping for both file types
     coffee: {
       compile: {
         // 1:1 mapping through globs
         expand: true,
         flatten: true,
-        cwd: 'src/',
+        cwd: 'back/src/',
         src: ['*.coffee'],
-        dest: 'lib/',
+        dest: 'back/lib/',
         ext: '.js',
         options: {
           sourceMap: true
@@ -25,26 +41,14 @@ module.exports = function(grunt) {
           style: 'expanded'
         },
         files: {
-          'styles/main.css': 'styles/main.scss'
+          'front/styles/main.css': 'front/styles/main.scss'
         }
       }
     },
 
-    coffee_concat: {
-      compile: {
-        options: {
-          sourceMap: true
-        },
-        files: {
-           // compile and concat into single file
-          'lib/main.js': ['src/*.coffee']
-        }
-      },
-    },
-
     watch: {
       js: {
-        files: ['src/*.coffee', 'styles/*.scss'],
+        files: ['back/src/*.coffee', 'front/coffee/*.coffee', 'front/styles/*.scss'],
         tasks: ['dev']
       }
     }
