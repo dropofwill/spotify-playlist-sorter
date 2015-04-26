@@ -1,5 +1,5 @@
 (function() {
-  var app, express, http_port, path, route, server;
+  var app, express, fs, http_port, path, route, server;
 
   require('coffee-script/register');
 
@@ -8,6 +8,8 @@
   route = require('./router');
 
   path = require('path');
+
+  fs = require('fs');
 
   http_port = 3000;
 

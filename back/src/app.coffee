@@ -1,7 +1,10 @@
+#!/bin/env node
+
 require('coffee-script/register')
 express   = require('express')
 route     = require('./router')
 path      = require('path')
+fs        = require('fs');
 http_port = 3000
 
 app = express()
