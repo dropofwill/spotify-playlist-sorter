@@ -12,7 +12,7 @@ module.exports = function(grunt) {
           debug: true
         },
         files: [{
-           // compile and concat into single file
+          // compile and concat into single file
           src: ['front/coffee/*.coffee'],
           dest: 'front/js/main.js'
         }]
