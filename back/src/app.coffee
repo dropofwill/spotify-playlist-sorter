@@ -5,8 +5,7 @@ path      = require('path')
 http_port = 3000
 
 app = express()
-
-app.set('views', '../../views')
+app.set('views', path.resolve(path.join(__dirname, "../../views/")))
 app.set('view engine', 'jade')
 app.disable('x-powered-by')
 
@@ -20,3 +19,6 @@ server = app.listen(http_port, (err) ->
 
 app.get('/', (req, res) ->
   res.render('index', { title: 'Project' }))
+
+app.get('/proposal', (req, res) ->
+  res.render('proposal', { title: 'Proposal' }))

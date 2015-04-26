@@ -1,0 +1,32 @@
+extends ./base.jade
+
+block content
+  h2 The Web Services
+    ul
+      li
+        a(href='http://www.last.fm/api/show/playlist.create') Last.fm
+      li
+        a(href='https://developer.spotify.com/web-api/working-with-playlists/') Spotify
+      li
+        a(href='http://www.rdio.com/developers/docs/web-service/methods/playlists/') Rdio
+
+    hr
+
+    h2 Future Features
+    ul
+      li User accounts, with a backend
+      li Propagate playlist changes across music services
+      li Expand service offerings to services with one-to-one mappings (i.e. where there are more than one version of a given song), like YouTube or Grooveshark.
+
+    hr
+
+    h2 Features for this Version of the Project
+
+    ul
+      li Load playlists from music streaming services
+      li Edit these playlists with a drag and drop interface
+      li Push these back upstream, integrating remote changes
+
+    hr
+
+    img(src='imgs/wireframes-upm.jpg', alt='rough wireframe')

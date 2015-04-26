@@ -13,7 +13,7 @@
 
   app = express();
 
-  app.set('views', '../../views');
+  app.set('views', path.resolve(path.join(__dirname, "../../views/")));
 
   app.set('view engine', 'jade');
 
@@ -32,6 +32,12 @@
   app.get('/', function(req, res) {
     return res.render('index', {
       title: 'Project'
+    });
+  });
+
+  app.get('/proposal', function(req, res) {
+    return res.render('proposal', {
+      title: 'Proposal'
     });
   });
 
