@@ -17,7 +17,9 @@
   ],
   "author": "Will Paul",
   "license": "BSD 3",
-  "bugs": { "url": "https://github.com/dropofwill/upm-ui/issues" },
+  "bugs": {
+    "url": "https://github.com/dropofwill/upm-ui/issues"
+  },
   "engines": {
     "node": ">= 0.6.0",
     "npm": ">= 1.0.0"
@@ -37,7 +39,8 @@
     "express": "^4.12.3",
     "jade": "^1.9.2",
     "jquery": "^2.1.3",
-    "lodash": "^3.7.0"
+    "lodash": "^3.7.0",
+    "request": "^2.55.0"
   },
   "private": true
 }
