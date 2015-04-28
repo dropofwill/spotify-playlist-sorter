@@ -17,6 +17,11 @@
 
   _ = require('lodash');
 
+  envError = function() {
+    console.log("Please add: \n SPOTIFY_CLIENT_ID='your_client_id' \n SPOTIFY_CLIENT_SECRET='your_secret' ");
+    return process.exit(1);
+  };
+
   if (!process.env.SPOTIFY_CLIENT_ID) {
     envError();
   }
@@ -51,7 +56,7 @@
     }
   });
 
-  redirect_uri = 'http://localhost:#{http_port}/callback';
+  redirect_uri = "http://localhost:" + http_port + "/callback";
 
 
   /*
@@ -69,16 +74,15 @@
     return text;
   };
 
+
+  /*
+   * Returns a random alpha-numeric character
+   */
+
   randomAlphaNumeric = function() {
     var possible;
     possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     return possible.charAt(Math.floor(Math.random() * possible.length));
-  };
-
-  envError = function() {
-    console.log("SPOTIFY_CLIENT_ID='your_username'");
-    console.log("SPOTIFY_CLIENT_SECRET='your_password'");
-    return process.exit(1);
   };
 
 
@@ -88,6 +92,17 @@
 
   app.get('/', function(req, res) {
     return res.render('index', {
+      title: 'Project'
+    });
+  });
+
+
+  /*
+   * Route for the page to experiment with the table interface
+   */
+
+  app.get('/lab', function(req, res) {
+    return res.render('lab', {
       title: 'Project'
     });
   });

@@ -10,6 +10,12 @@ path         = require('path')
 fs           = require('fs')
 _            = require('lodash')
 
+envError = () ->
+	console.log("Please add: \n
+	  SPOTIFY_CLIENT_ID='your_client_id' \n
+    SPOTIFY_CLIENT_SECRET='your_secret' ")
+	process.exit(1)
+
 envError() if not process.env.SPOTIFY_CLIENT_ID
 envError() if not process.env.SPOTIFY_CLIENT_SECRET
 
@@ -32,7 +38,7 @@ server = app.listen(http_port, (err) ->
 	else
 		console.log("===== Serving on port " + http_port + " ======"))
 
-redirect_uri  = 'http://localhost:#{http_port}/callback'
+redirect_uri  = "http://localhost:#{http_port}/callback"
 
 ###
 # Generates a random string containing numbers and letters
@@ -44,14 +50,12 @@ generateRandomString = (length) ->
   _.times(length, -> text += randomAlphaNumeric())
   return text
 
+###
+# Returns a random alpha-numeric character
+###
 randomAlphaNumeric = () ->
   possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   possible.charAt(Math.floor(Math.random() * possible.length))
-
-envError = () ->
-	console.log("SPOTIFY_CLIENT_ID='your_username'")
-	console.log("SPOTIFY_CLIENT_SECRET='your_password'")
-	process.exit(1)
 
 
 ###
@@ -59,6 +63,12 @@ envError = () ->
 ###
 app.get('/', (req, res) ->
   res.render('index', { title: 'Project' }))
+
+###
+# Route for the page to experiment with the table interface
+###
+app.get('/lab', (req, res) ->
+  res.render('lab', { title: 'Project' }))
 
 ###
 # Route for the proposal page
