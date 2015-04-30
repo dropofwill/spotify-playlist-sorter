@@ -58,7 +58,7 @@
 }).call(this);
 
 
-},{"./utils.coffee":1,"lodash":3,"jquery":4}],4:[function(require,module,exports){
+},{"./utils.coffee":1,"jquery":3,"lodash":4}],3:[function(require,module,exports){
 (function(){/*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -9266,7 +9266,7 @@ return jQuery;
 }));
 
 })()
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 (function(global){/**
  * @license
  * lodash 3.7.0 (Custom Build) <https://lodash.com/>

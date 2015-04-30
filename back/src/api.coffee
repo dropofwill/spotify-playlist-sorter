@@ -79,8 +79,7 @@ app.get('/login', (req, res) ->
       client_id: client_id,
       scope: scopes,
       redirect_uri: redirect_uri,
-      state: state
-    })))
+      state: state })))
 
 app.get('/callback', (req, res) ->
   # your application requests refresh and access tokens
