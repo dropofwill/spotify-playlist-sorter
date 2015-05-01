@@ -59,64 +59,6 @@
     }
   };
 
-
-  /*
-   * Returns a string that comprises a base url with an object of query params
-   * concatenated with a divider, either a "?" for query strings or "#" for 
-   * passing info to the client
-   */
-
-  utils.compose_url = function(base_url, query_obj, hash_or_query) {
-    var query;
-    if (hash_or_query == null) {
-      hash_or_query = "?";
-    }
-    query = qs.stringify(query_obj);
-    return "" + base_url + hash_or_query + query;
-  };
-
-  utils.url_builder = function(pathname, o) {
-    if (o == null) {
-      o = {};
-    }
-    if (o.protocol == null) {
-      o.protocol = 'https';
-    }
-    if (o.hostname == null) {
-      o.hostname = config.api_host;
-    }
-    if (o.hash == null) {
-      o.hash = null;
-    }
-    if (o.response_type == null) {
-      o.response_type = 'code';
-    }
-    if (o.client_id == null) {
-      o.client_id = config.client_id;
-    }
-    if (o.redirect_uri == null) {
-      o.redirect_uri = config.redirect_uri;
-    }
-    if (o.state == null) {
-      o.state = null;
-    }
-    if (o.scope == null) {
-      o.scope = 'user-read-private user-read-email';
-    }
-    return {
-      protocol: o.protocol,
-      hostname: o.hostname,
-      hash: o.hash,
-      query: {
-        response_type: o.response_type,
-        client_id: o.client_id,
-        redirect_uri: o.redirect_uri,
-        state: o.state,
-        scope: o.scope
-      }
-    };
-  };
-
   utils.auth_builder = function(state, host, path, scopes) {
     var scope;
     if (host == null) {
