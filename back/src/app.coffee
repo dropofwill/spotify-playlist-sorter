@@ -1,173 +1,116 @@
 #!/bin/env node
-
 require('coffee-script/register')
 
 express      = require('express')
 request      = require('request')
-querystring  = require('querystring')
+url          = require('url')
+qs           = require('querystring')
 cookieParser = require('cookie-parser')
 path         = require('path')
 fs           = require('fs')
-_            = require('lodash')
 
-envError = () ->
-	console.log("Please add: \n
-	  SPOTIFY_CLIENT_ID='your_client_id' \n
-    SPOTIFY_CLIENT_SECRET='your_secret' ")
-	process.exit(1)
-
-envError() if not process.env.SPOTIFY_CLIENT_ID
-envError() if not process.env.SPOTIFY_CLIENT_SECRET
-
-client_id     = process.env.SPOTIFY_CLIENT_ID
-client_secret = process.env.SPOTIFY_CLIENT_SECRET
-http_port     = process.env.PORT || 3000
-stateKey      = 'spotify_auth_state'
+config       = require('./config')
+utils        = require('./utils')
+spotify      = require('./spotify')
 
 app = express()
-app.set('views', path.resolve(path.join(__dirname, "../../views/")))
-app.set('view engine', 'jade')
-app.disable('x-powered-by')
-
-app.use(express.static("front"))
+   .set('views', config.views_dir)
+   .set('view engine', config.view_engine)
+   .disable('x-powered-by')
+   .use(express.static("front"))
    .use(cookieParser())
 
-server = app.listen(http_port, (err) ->
-	if(err)
-		console.log(err)
-	else
-		console.log("===== Serving on port " + http_port + " ======"))
-
-redirect_uri  = "http://localhost:#{http_port}/callback"
-
-###
-# Generates a random string containing numbers and letters
-# param  {number} length The length of the string
-# return {string} The generated string
-###
-generateRandomString = (length) ->
-  text = ''
-  _.times(length, -> text += randomAlphaNumeric())
-  return text
-
-###
-# Returns a random alpha-numeric character
-###
-randomAlphaNumeric = () ->
-  possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  possible.charAt(Math.floor(Math.random() * possible.length))
-
+server = app.listen(config.port, (err) -> utils.log_server(config.port, err))
 
 ###
 # Route for the root project page
 ###
 app.get('/', (req, res) ->
-  res.render('index', { title: 'Project' }))
+  res.render('index', title: 'Project'))
 
 ###
 # Route for the page to experiment with the table interface
 ###
 app.get('/lab', (req, res) ->
-  res.render('lab', { title: 'Project' }))
+  res.render('lab', title: 'Project'))
 
 ###
 # Route for the proposal page
 ###
 app.get('/proposal', (req, res) ->
-  res.render('proposal', { title: 'Proposal' }))
+  res.render('proposal', title: 'Proposal'))
 
 ###
 # Route for the documentation page TODO: not just the proposal page
 ###
 app.get('/documentation', (req, res) ->
-  res.render('proposal', { title: 'Proposal' }))
+  res.render('proposal', title: 'Proposal'))
 
 ###
 # Route to authenticate a Spotify user
+# Generate a random string to save on the client to verify that after the
+# callback its still the same client
+# Finally redirect to Spotify to authenticate
 ###
 app.get('/login', (req, res) ->
-  state = generateRandomString(16)
-  res.cookie(stateKey, state)
-
-  # Request authorization
-  scope = 'user-read-private user-read-email'
-  res.redirect('https://accounts.spotify.com/authorize?' +
-    querystring.stringify({
-      response_type: 'code',
-      client_id: client_id,
-      scope: scope,
-      redirect_uri: redirect_uri,
-      state: state
-    }))
-)
+  state = utils.generate_random_string(16)
+  res.cookie(config.state_key, state)
+  res.redirect(spotify.auth_builder(state)))
 
 ###
 # Route that Spotify will hit after authentication
+# Application requests refresh and access tokens
+# after checking the state parameter
 ###
 app.get('/callback', (req, res) ->
-  # your application requests refresh and access tokens
-  # after checking the state parameter
+  code = req.query.code ? null
 
-  code = req.query.code || null
-  state = req.query.state || null
-  storedState = if req.cookies then req.cookies[stateKey] else null
+  if utils.client_has_correct_state(req)
+    res.clearCookie(config.state_key)
+    auth_options = spotify.token_builder(code)
 
-  if not state? || state isnt storedState
-    res.redirect('/#' + querystring.stringify({ error: 'state_mismatch' }))
-  else
-    res.clearCookie(stateKey)
-    authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
-      form: {
-        code: code,
-        redirect_uri: redirect_uri,
-        grant_type: 'authorization_code'
-      },
-      headers: {
-        'Authorization': 'Basic ' +
-        (new Buffer(client_id + ':' + client_secret).toString('base64'))
-      },
-      json: true }
-
-    request.post(authOptions, (error, response, body) ->
-      if (!error && response.statusCode is 200)
+    request.post(auth_options, (error, response, body) ->
+      if not error and 200 >= response.statusCode < 300
         access_token = body.access_token
         refresh_token = body.refresh_token
 
-        options = {
-          url: 'https://api.spotify.com/v1/me',
-          headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true }
+        options =
+          url: 'https://api.spotify.com/v1/me'
+          headers:
+            'Authorization': 'Bearer ' + access_token
+          json: true
 
+        me = null
         # use the access token to access the Spotify Web API
-        request.get(options, (error, response, body) -> console.log(body))
+        request.get(options, (error, response, body) ->
+          console.log(body)
+          me = body.id
+
+          options =
+            url: "https://api.spotify.com/v1/users/#{me}/playlists"
+            headers:
+              'Authorization': 'Bearer ' + access_token
+            json: true
+
+          request.get(options, (error, response, body) ->
+            console.log(body))
+        )
 
         # can also pass the token to the browser to make requests from there
-        res.redirect('/#' +
-          querystring.stringify({
+        res.redirect(utils.hash_builder(
             access_token: access_token,
-            refresh_token: refresh_token }))
+            refresh_token: refresh_token))
       else
-        res.redirect('/#' + querystring.stringify({ error: 'invalid_token' }))
-  )
-)
+        res.redirect(utils.local_error_builder(error, response.statusCode)))
+  else
+    res.redirect(utils.local_error_builder('state_mismatch')))
 
 app.get('/refresh_token', (req, res) ->
   # requesting access token from refresh token
   refresh_token = req.query.refresh_token
-  authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    headers: { 'Authorization': 'Basic ' +
-      (new Buffer(client_id + ':' + client_secret).toString('base64')) },
-    form: {
-      grant_type: 'refresh_token',
-      refresh_token: refresh_token
-    },
-    json: true }
+  auth_options = spotify.token_builder(code, 'refresh_token')
 
-  request.post(authOptions, (error, response, body) ->
-    if (!error && response.statusCode is 200)
+  request.post(auth_options, (error, response, body) ->
+    if not error and 200 >= response.statusCode < 300
       access_token = body.access_token
-      res.send({ 'access_token': access_token })
-  )
-)
+      res.send('access_token': access_token)))
