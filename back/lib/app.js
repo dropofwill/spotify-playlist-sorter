@@ -1,5 +1,5 @@
 (function() {
-  var _, app, client_id, client_secret, cookieParser, envError, express, fs, generateRandomString, http_port, path, querystring, randomAlphaNumeric, redirect_uri, request, server, stateKey;
+  var _, app, config, cookieParser, express, fs, parse, path, qs, request, server, utils;
 
   require('coffee-script/register');
 
@@ -7,7 +7,9 @@
 
   request = require('request');
 
-  querystring = require('querystring');
+  parse = require('url-parse');
+
+  qs = require('querystring');
 
   cookieParser = require('cookie-parser');
 
@@ -17,73 +19,15 @@
 
   _ = require('lodash');
 
-  envError = function() {
-    console.log("Please add: \n SPOTIFY_CLIENT_ID='your_client_id' \n SPOTIFY_CLIENT_SECRET='your_secret' ");
-    return process.exit(1);
-  };
+  config = require('./config');
 
-  if (!process.env.SPOTIFY_CLIENT_ID) {
-    envError();
-  }
+  utils = require('./utils');
 
-  if (!process.env.SPOTIFY_CLIENT_SECRET) {
-    envError();
-  }
+  app = express().set('views', config.views_dir).set('view engine', config.view_engine).disable('x-powered-by').use(express["static"]("front")).use(cookieParser());
 
-  client_id = process.env.SPOTIFY_CLIENT_ID;
-
-  client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-
-  http_port = process.env.PORT || 3000;
-
-  stateKey = 'spotify_auth_state';
-
-  app = express();
-
-  app.set('views', path.resolve(path.join(__dirname, "../../views/")));
-
-  app.set('view engine', 'jade');
-
-  app.disable('x-powered-by');
-
-  app.use(express["static"]("front")).use(cookieParser());
-
-  server = app.listen(http_port, function(err) {
-    if (err) {
-      return console.log(err);
-    } else {
-      return console.log("===== Serving on port " + http_port + " ======");
-    }
+  server = app.listen(config.port, function(err) {
+    return utils.log_server(config.port, err);
   });
-
-  redirect_uri = "http://localhost:" + http_port + "/callback";
-
-
-  /*
-   * Generates a random string containing numbers and letters
-   * param  {number} length The length of the string
-   * return {string} The generated string
-   */
-
-  generateRandomString = function(length) {
-    var text;
-    text = '';
-    _.times(length, function() {
-      return text += randomAlphaNumeric();
-    });
-    return text;
-  };
-
-
-  /*
-   * Returns a random alpha-numeric character
-   */
-
-  randomAlphaNumeric = function() {
-    var possible;
-    possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    return possible.charAt(Math.floor(Math.random() * possible.length));
-  };
 
 
   /*
@@ -135,17 +79,18 @@
    */
 
   app.get('/login', function(req, res) {
-    var scope, state;
-    state = generateRandomString(16);
-    res.cookie(stateKey, state);
-    scope = 'user-read-private user-read-email';
-    return res.redirect('https://accounts.spotify.com/authorize?' + querystring.stringify({
+    var auth_qs, auth_scope, state;
+    state = utils.generate_random_string(16);
+    res.cookie(config.state_key, state);
+    auth_scope = 'user-read-private user-read-email';
+    auth_qs = qs.stringify({
       response_type: 'code',
-      client_id: client_id,
-      scope: scope,
-      redirect_uri: redirect_uri,
-      state: state
-    }));
+      client_id: config.client_id,
+      redirect_uri: config.redirect_uri,
+      state: state,
+      scope: auth_scope
+    });
+    return res.redirect(auth_url, auth_qs);
   });
 
 
@@ -154,29 +99,29 @@
    */
 
   app.get('/callback', function(req, res) {
-    var authOptions, code, state, storedState;
+    var auth_options, code, state, stored_state;
     code = req.query.code || null;
     state = req.query.state || null;
-    storedState = req.cookies ? req.cookies[stateKey] : null;
-    if ((state == null) || state !== storedState) {
-      return res.redirect('/#' + querystring.stringify({
+    stored_state = req.cookies ? req.cookies[state_key] : null;
+    if ((state == null) || state !== stored_state) {
+      return res.redirect('/#' + qs.stringify({
         error: 'state_mismatch'
       }));
     } else {
-      res.clearCookie(stateKey);
-      authOptions = {
+      res.clearCookie(config.state_key);
+      auth_options = {
         url: 'https://accounts.spotify.com/api/token',
         form: {
           code: code,
-          redirect_uri: redirect_uri,
+          redirect_uri: config.redirect_uri,
           grant_type: 'authorization_code'
         },
         headers: {
-          'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+          'Authorization': 'Basic ' + (new Buffer(config.client_id + ':' + config.client_secret).toString('base64'))
         },
         json: true
       };
-      return request.post(authOptions, function(error, response, body) {
+      return request.post(auth_options, function(error, response, body) {
         var access_token, options, refresh_token;
         if (!error && response.statusCode === 200) {
           access_token = body.access_token;
@@ -191,12 +136,12 @@
           request.get(options, function(error, response, body) {
             return console.log(body);
           });
-          return res.redirect('/#' + querystring.stringify({
+          return res.redirect('/#' + qs.stringify({
             access_token: access_token,
             refresh_token: refresh_token
           }));
         } else {
-          return res.redirect('/#' + querystring.stringify({
+          return res.redirect('/#' + qs.stringify({
             error: 'invalid_token'
           }));
         }
@@ -205,9 +150,9 @@
   });
 
   app.get('/refresh_token', function(req, res) {
-    var authOptions, refresh_token;
+    var auth_options, refresh_token;
     refresh_token = req.query.refresh_token;
-    authOptions = {
+    auth_options = {
       url: 'https://accounts.spotify.com/api/token',
       headers: {
         'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
@@ -218,7 +163,7 @@
       },
       json: true
     };
-    return request.post(authOptions, function(error, response, body) {
+    return request.post(auth_options, function(error, response, body) {
       var access_token;
       if (!error && response.statusCode === 200) {
         access_token = body.access_token;

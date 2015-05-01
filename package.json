@@ -44,7 +44,8 @@
     "passport": "^0.2.1",
     "rem": "^0.7.0-3",
     "request": "^2.55.0",
-    "spotify-web-api-node": "^2.0.1"
+    "spotify-web-api-node": "^2.0.1",
+    "url-parse": "^1.0.0"
   },
   "private": true
 }

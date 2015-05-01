@@ -4,6 +4,7 @@ require('coffee-script/register')
 
 express      = require('express')
 request      = require('request')
+parse        = require('url-parse')
 querystring  = require('querystring')
 cookieParser = require('cookie-parser')
 path         = require('path')
@@ -16,13 +17,12 @@ utils        = require('./utils')
 if not process.env.SPOTIFY_CLIENT_ID          \
    and not process.env.SPOTIFY_CLIENT_SECRET  \
    and not process.env.UPM_REDIRECT_URI       \
-   and not process.env.PORT
   utils.envError()
 else
   client_id     = process.env.SPOTIFY_CLIENT_ID
   client_secret = process.env.SPOTIFY_CLIENT_SECRET
   redirect_uri  = process.env.UPM_REDIRECT_URI
-  http_port     = process.env.PORT || 3000
+  http_port     = pares(redirect_uri).port
 
 stateKey      = 'spotify_auth_state'
 accessKey     = 'spotify_access_token'

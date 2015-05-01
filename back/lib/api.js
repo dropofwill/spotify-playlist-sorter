@@ -1,11 +1,13 @@
 (function() {
-  var SpotifyApi, _, accessKey, app, client_id, client_secret, cookieParser, creds, express, fs, http_port, path, querystring, redirect_uri, refreshKey, request, server, spotify, stateKey, utils;
+  var SpotifyApi, _, accessKey, app, client_id, client_secret, cookieParser, creds, express, fs, http_port, parse, path, querystring, redirect_uri, refreshKey, request, server, spotify, stateKey, utils;
 
   require('coffee-script/register');
 
   express = require('express');
 
   request = require('request');
+
+  parse = require('url-parse');
 
   querystring = require('querystring');
 
@@ -21,13 +23,13 @@
 
   utils = require('./utils');
 
-  if (!process.env.SPOTIFY_CLIENT_ID && !process.env.SPOTIFY_CLIENT_SECRET && !process.env.UPM_REDIRECT_URI && !process.env.PORT) {
-    utils.envError();
+  if (!process.env.SPOTIFY_CLIENT_ID && !process.env.SPOTIFY_CLIENT_SECRET && !process.env.UPM_REDIRECT_URI(utils.envError())) {
+
   } else {
     client_id = process.env.SPOTIFY_CLIENT_ID;
     client_secret = process.env.SPOTIFY_CLIENT_SECRET;
     redirect_uri = process.env.UPM_REDIRECT_URI;
-    http_port = process.env.PORT || 3000;
+    http_port = pares(redirect_uri).port;
   }
 
   stateKey = 'spotify_auth_state';
