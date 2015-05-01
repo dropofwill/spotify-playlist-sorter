@@ -59,6 +59,13 @@
     }
   };
 
+
+  /*
+   * Returns a URL string for phase 1 of the OAuth 2 process
+   * Requires a string state parameter
+   * Optionally pass a string host, string path, or array of scopes
+   */
+
   utils.auth_builder = function(state, host, path, scopes) {
     var scope;
     if (host == null) {
@@ -71,7 +78,7 @@
       scopes = ['user-read-private', 'user-read-email'];
     }
     scope = scopes.join(" ");
-    return {
+    return url.format({
       protocol: 'https',
       hostname: host,
       pathname: path,
@@ -82,7 +89,7 @@
         state: state,
         scope: scope
       }
-    };
+    });
   };
 
 }).call(this);

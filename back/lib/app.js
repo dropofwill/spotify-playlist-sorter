@@ -96,9 +96,7 @@
         scope: 'user-read-private user-read-email'
       }
     };
-    url_obj = utils.auth_builder(state);
-    url_str = url.format(url_obj);
-    console.log(url_str);
+    url_str = utils.auth_builder(state);
     return res.redirect(url_str);
   });
 
