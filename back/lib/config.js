@@ -1,5 +1,5 @@
 (function() {
-  var accounts_base_url, api_base_url, api_path, auth_path, auth_url, parse, path, port, redirect_uri, token_path, token_url, url;
+  var parse, path, port, redirect_uri, url;
 
   parse = require('url-parse');
 
@@ -21,20 +21,6 @@
 
   port = parse(redirect_uri).port;
 
-  accounts_base_url = 'https://accounts.spotify.com/';
-
-  api_base_url = 'https://api.spotify.com/';
-
-  auth_path = '/authorize';
-
-  token_path = '/api/token';
-
-  api_path = '/v1';
-
-  auth_url = path.resolve(accounts_base_url, auth_path);
-
-  token_url = path.resolve(accounts_base_url, token_path);
-
   module.exports = {
     client_id: process.env.SPOTIFY_CLIENT_ID,
     client_secret: process.env.SPOTIFY_CLIENT_SECRET,
@@ -45,8 +31,11 @@
     state_key: 'spotify_auth_state',
     access_key: 'spotify_access_token',
     refresh_key: 'spotify_refresh_token',
-    auth_url: auth_url,
-    token_url: token_url
+    accounts_host: 'accounts.spotify.com',
+    api_host: 'api.spotify.com',
+    auth_path: '/authorize',
+    token_path: '/api/token',
+    api_path: '/v1'
   };
 
 }).call(this);

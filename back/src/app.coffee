@@ -3,7 +3,7 @@ require('coffee-script/register')
 
 express      = require('express')
 request      = require('request')
-parse        = require('url-parse')
+url          = require('url')
 qs           = require('querystring')
 cookieParser = require('cookie-parser')
 path         = require('path')
@@ -55,15 +55,20 @@ app.get('/login', (req, res) ->
   res.cookie(config.state_key, state)
 
   # Request authorization
-  auth_scope    = 'user-read-private user-read-email'
-  auth_qs = qs.stringify(
-    response_type:  'code'
-    client_id:      config.client_id
-    redirect_uri:   config.redirect_uri
-    state:          state
-    scope:          auth_scope)
+  url_obj =
+    protocol: 'https'
+    hostname: config.accounts_host
+    pathname: config.auth_path
+    query:
+      response_type:  'code'
+      client_id:      config.client_id
+      redirect_uri:   config.redirect_uri
+      state:          state
+      scope:          'user-read-private user-read-email'
 
-  res.redirect(auth_url, auth_qs))
+  url_str = url.format(object_url)
+
+  res.redirect(url_str))
 
 ###
 # Route that Spotify will hit after authentication
@@ -74,7 +79,7 @@ app.get('/callback', (req, res) ->
 
   code = req.query.code || null
   state = req.query.state || null
-  stored_state = if req.cookies then req.cookies[state_key] else null
+  stored_state = if req.cookies then req.cookies[config.state_key] else null
 
   if not state? || state isnt stored_state
     res.redirect('/#' + qs.stringify(error: 'state_mismatch'))

@@ -1,5 +1,5 @@
 (function() {
-  var _, app, config, cookieParser, express, fs, parse, path, qs, request, server, utils;
+  var _, app, config, cookieParser, express, fs, path, qs, request, server, url, utils;
 
   require('coffee-script/register');
 
@@ -7,7 +7,7 @@
 
   request = require('request');
 
-  parse = require('url-parse');
+  url = require('url');
 
   qs = require('querystring');
 
@@ -79,18 +79,23 @@
    */
 
   app.get('/login', function(req, res) {
-    var auth_qs, auth_scope, state;
+    var state, url_obj, url_str;
     state = utils.generate_random_string(16);
     res.cookie(config.state_key, state);
-    auth_scope = 'user-read-private user-read-email';
-    auth_qs = qs.stringify({
-      response_type: 'code',
-      client_id: config.client_id,
-      redirect_uri: config.redirect_uri,
-      state: state,
-      scope: auth_scope
-    });
-    return res.redirect(auth_url, auth_qs);
+    url_obj = {
+      protocol: 'https',
+      hostname: config.accounts_host,
+      pathname: config.auth_path,
+      query: {
+        response_type: 'code',
+        client_id: config.client_id,
+        redirect_uri: config.redirect_uri,
+        state: state,
+        scope: 'user-read-private user-read-email'
+      }
+    };
+    url_str = url.format(object_url);
+    return res.redirect(url_str);
   });
 
 
@@ -102,7 +107,7 @@
     var auth_options, code, state, stored_state;
     code = req.query.code || null;
     state = req.query.state || null;
-    stored_state = req.cookies ? req.cookies[state_key] : null;
+    stored_state = req.cookies ? req.cookies[config.state_key] : null;
     if ((state == null) || state !== stored_state) {
       return res.redirect('/#' + qs.stringify({
         error: 'state_mismatch'
