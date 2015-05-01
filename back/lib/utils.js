@@ -66,9 +66,17 @@
    * Simple, local error passed as a hash url to the client
    */
 
-  utils.local_error_builder = function(err) {
+  utils.local_error_builder = function(err_msg, ec, res) {
+    if (ec == null) {
+      ec = "";
+    }
+    if (res == null) {
+      res = "";
+    }
+    console.log(res);
+    console.warn("Warning: " + err_msg + " " + ec);
     return '/#' + qs.stringify({
-      error: err
+      error: err_msg
     });
   };
 
@@ -89,9 +97,15 @@
     }
   };
 
+
+  /*
+   * Generate a base64 encoded string with the client id and secret
+   * Used when requesting token generation
+   */
+
   utils.basic_auth_header = function() {
     var client_info;
-    client_info = new Buffer(config.client_id + " : " + config.client_secret).toString('base64');
+    client_info = new Buffer(config.client_id + ":" + config.client_secret).toString('base64');
     return "Basic " + client_info;
   };
 

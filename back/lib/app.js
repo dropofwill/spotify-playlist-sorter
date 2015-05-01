@@ -112,9 +112,10 @@
         },
         json: true
       };
+      auth_options = spotify.token_builder(code);
       return request.post(auth_options, function(error, response, body) {
-        var access_token, options, refresh_token;
-        if (!error && response.statusCode === 200) {
+        var access_token, options, ref1, refresh_token;
+        if (!error && (200 >= (ref1 = response.statusCode) && ref1 < 300)) {
           access_token = body.access_token;
           refresh_token = body.refresh_token;
           options = {
@@ -132,7 +133,7 @@
             refresh_token: refresh_token
           }));
         } else {
-          return res.redirect(utils.local_error_builder('invalid_token'));
+          return res.redirect(utils.local_error_builder(error, response.statusCode, response));
         }
       });
     } else {

@@ -77,8 +77,10 @@ app.get('/callback', (req, res) ->
         'Authorization': utils.basic_auth_header()
       json: true
 
+    auth_options = spotify.token_builder(code)
+
     request.post(auth_options, (error, response, body) ->
-      if not error and response.statusCode is 200
+      if not error and 200 >= response.statusCode < 300
         access_token = body.access_token
         refresh_token = body.refresh_token
 
@@ -97,7 +99,7 @@ app.get('/callback', (req, res) ->
             access_token: access_token,
             refresh_token: refresh_token))
       else
-        res.redirect(utils.local_error_builder('invalid_token')))
+        res.redirect(utils.local_error_builder(error, response.statusCode, response)))
   else
     res.redirect(utils.local_error_builder('state_mismatch')))
 
