@@ -95,14 +95,7 @@ app.get('/callback', (req, res) ->
 app.get('/refresh_token', (req, res) ->
   # requesting access token from refresh token
   refresh_token = req.query.refresh_token
-  auth_options =
-    url: 'https://accounts.spotify.com/api/token'
-    headers:
-      'Authorization': utils.basic_auth_header()
-    form:
-      grant_type: 'refresh_token'
-      refresh_token: refresh_token
-    json: true
+  auth_options = spotify.token_builder(code, 'refresh_token')
 
   request.post(auth_options, (error, response, body) ->
     if not error and 200 >= response.statusCode < 300

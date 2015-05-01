@@ -38,3 +38,5 @@ module.exports =
   auth_path:      '/authorize'
   token_path:     '/api/token'
   api_path:       '/v1'
+
+  scopes:         ['user-read-private', 'user-read-email']

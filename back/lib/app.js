@@ -132,17 +132,7 @@
   app.get('/refresh_token', function(req, res) {
     var auth_options, refresh_token;
     refresh_token = req.query.refresh_token;
-    auth_options = {
-      url: 'https://accounts.spotify.com/api/token',
-      headers: {
-        'Authorization': utils.basic_auth_header()
-      },
-      form: {
-        grant_type: 'refresh_token',
-        refresh_token: refresh_token
-      },
-      json: true
-    };
+    auth_options = spotify.token_builder(code, 'refresh_token');
     return request.post(auth_options, function(error, response, body) {
       var access_token, ref;
       if (!error && (200 >= (ref = response.statusCode) && ref < 300)) {

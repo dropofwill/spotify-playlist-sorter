@@ -27,7 +27,7 @@
       path = config.auth_path;
     }
     if (scopes == null) {
-      scopes = ['user-read-private', 'user-read-email'];
+      scopes = config.scopes;
     }
     scope = scopes.join(" ");
     return url.format({

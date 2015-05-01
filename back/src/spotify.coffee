@@ -10,8 +10,8 @@ utils = require('./utils')
 # Requires a string state parameter
 # Optionally pass a string host, string path, or array of scopes
 ###
-spotify.auth_builder = (state, host=config.accounts_host, path=config.auth_path,
-                        scopes=['user-read-private', 'user-read-email']) ->
+spotify.auth_builder = (state, host=config.accounts_host,
+                        path=config.auth_path, scopes=config.scopes) ->
   scope = scopes.join(" ")
 
   url.format(
