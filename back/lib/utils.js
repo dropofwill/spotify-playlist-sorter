@@ -1,11 +1,13 @@
 (function() {
-  var _, config, qs, utils;
+  var _, config, qs, url, utils;
 
   utils = exports;
 
   _ = require('lodash');
 
   qs = require('querystring');
+
+  url = require('url');
 
   config = require('./config');
 

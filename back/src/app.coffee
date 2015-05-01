@@ -67,7 +67,7 @@ app.get('/login', (req, res) ->
       state:          state
       scope:          'user-read-private user-read-email'
 
-  res.redirect(utils.auth_builder(state))
+  res.redirect(utils.auth_builder(state)))
 
 ###
 # Route that Spotify will hit after authentication

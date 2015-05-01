@@ -1,5 +1,5 @@
 (function() {
-  var _, app, config, cookieParser, express, fs, path, qs, request, server, url, utils;
+  var app, config, cookieParser, express, fs, path, qs, request, server, url, utils;
 
   require('coffee-script/register');
 
@@ -16,8 +16,6 @@
   path = require('path');
 
   fs = require('fs');
-
-  _ = require('lodash');
 
   config = require('./config');
 
@@ -81,7 +79,7 @@
    */
 
   app.get('/login', function(req, res) {
-    var state, url_obj, url_str;
+    var state, url_obj;
     state = utils.generate_random_string(16);
     res.cookie(config.state_key, state);
     url_obj = {
@@ -96,8 +94,7 @@
         scope: 'user-read-private user-read-email'
       }
     };
-    url_str = utils.auth_builder(state);
-    return res.redirect(url_str);
+    return res.redirect(utils.auth_builder(state));
   });
 
 
