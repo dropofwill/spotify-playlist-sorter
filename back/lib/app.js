@@ -23,8 +23,6 @@
 
   app = express().set('views', config.views_dir).set('view engine', config.view_engine).disable('x-powered-by').use(express["static"]("front")).use(cookieParser());
 
-  console.log(utils.auth_builder("yolo"));
-
   server = app.listen(config.port, function(err) {
     return utils.log_server(config.port, err);
   });
@@ -76,30 +74,23 @@
 
   /*
    * Route to authenticate a Spotify user
+   * Generate a random string to save on the client to verify that after the
+   * callback its still the same client
+   * Finally redirect to Spotify to authenticate
    */
 
   app.get('/login', function(req, res) {
-    var state, url_obj;
+    var state;
     state = utils.generate_random_string(16);
     res.cookie(config.state_key, state);
-    url_obj = {
-      protocol: 'https',
-      hostname: config.accounts_host,
-      pathname: config.auth_path,
-      query: {
-        response_type: 'code',
-        client_id: config.client_id,
-        redirect_uri: config.redirect_uri,
-        state: state,
-        scope: 'user-read-private user-read-email'
-      }
-    };
-    return res.redirect(utils.auth_builder(state));
+    return res.redirect(spotify.auth_builder(state));
   });
 
 
   /*
    * Route that Spotify will hit after authentication
+   * Application requests refresh and access tokens
+   * after checking the state parameter
    */
 
   app.get('/callback', function(req, res) {
