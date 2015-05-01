@@ -44,8 +44,18 @@
     });
   };
 
-  spotify.token_builder = function(code, host, path) {
-    var url_str;
+
+  /*
+   * Returns an options object for request to post to either retrieve an access
+   * token (default) or refresh the current one (by passing in 'refresh_token' to
+   * the grant param.
+   */
+
+  spotify.token_builder = function(code, grant, host, path) {
+    var form, url_str;
+    if (grant == null) {
+      grant = 'authorization_code';
+    }
     if (host == null) {
       host = config.accounts_host;
     }
@@ -57,13 +67,21 @@
       hostname: host,
       pathname: path
     });
+    if (grant === 'authorization_code') {
+      form = {
+        grant_type: grant,
+        code: code,
+        redirect_uri: config.redirect_uri
+      };
+    } else {
+      form = {
+        grant_type: grant,
+        refresh_token: refresh_token
+      };
+    }
     return {
       url: url_str,
-      form: {
-        code: code,
-        redirect_uri: config.redirect_uri,
-        grant_type: 'authorization_code'
-      },
+      form: form,
       headers: {
         'Authorization': utils.basic_auth_header()
       },

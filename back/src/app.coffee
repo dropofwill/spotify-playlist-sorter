@@ -84,8 +84,7 @@ app.get('/callback', (req, res) ->
         request.get(options, (error, response, body) -> console.log(body))
 
         # can also pass the token to the browser to make requests from there
-        res.redirect('/#' +
-          qs.stringify(
+        res.redirect(utils.hash_builder(
             access_token: access_token,
             refresh_token: refresh_token))
       else
@@ -106,6 +105,6 @@ app.get('/refresh_token', (req, res) ->
     json: true
 
   request.post(auth_options, (error, response, body) ->
-    if not error and response.statusCode is 200
+    if not error and 200 >= response.statusCode < 300
       access_token = body.access_token
       res.send('access_token': access_token)))

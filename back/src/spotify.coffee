@@ -26,18 +26,22 @@ spotify.auth_builder = (state, host=config.accounts_host, path=config.auth_path,
       scope:          scope)
 
 
-spotify.token_builder = (code, host=config.accounts_host,
-                         path=config.token_path) ->
-  url_str = url.format(
-    protocol: 'https'
-    hostname: host
-    pathname: path)
+###
+# Returns an options object for request to post to either retrieve an access
+# token (default) or refresh the current one (by passing in 'refresh_token' to
+# the grant param.
+###
+spotify.token_builder = (code, grant='authorization_code',
+                         host=config.accounts_host, path=config.token_path) ->
+  url_str = url.format(protocol: 'https', hostname: host, pathname: path)
+
+  if grant is 'authorization_code'
+    form = {grant_type: grant, code: code, redirect_uri: config.redirect_uri}
+  else
+    form = {grant_type: grant, refresh_token: refresh_token }
 
   url: url_str
-  form:
-    code: code
-    redirect_uri: config.redirect_uri
-    grant_type: 'authorization_code'
+  form: form
   headers:
     'Authorization': utils.basic_auth_header()
   json: true

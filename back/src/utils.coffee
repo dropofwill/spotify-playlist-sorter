@@ -43,11 +43,16 @@ utils.log_server = (port, err) ->
     console.log("===== Serving on port " + port + " ======")
 
 ###
+# Basic building block for sending data to the client
+###
+utils.hash_builder = (qs_obj) -> '/#' + qs.stringify(qs_obj)
+
+###
 # Simple, local error passed as a hash url to the client
 ###
 utils.local_error_builder = (err_msg, ec="") ->
   console.warn("Warning: #{err_msg} #{ec}")
-  '/#' + qs.stringify(error: err_msg)
+  utils.hash_builder(error: err_msg)
 
 ###
 # Check whether the client after the request is the same as the client after

@@ -116,7 +116,7 @@
           request.get(options, function(error, response, body) {
             return console.log(body);
           });
-          return res.redirect('/#' + qs.stringify({
+          return res.redirect(utils.hash_builder({
             access_token: access_token,
             refresh_token: refresh_token
           }));
@@ -144,8 +144,8 @@
       json: true
     };
     return request.post(auth_options, function(error, response, body) {
-      var access_token;
-      if (!error && response.statusCode === 200) {
+      var access_token, ref;
+      if (!error && (200 >= (ref = response.statusCode) && ref < 300)) {
         access_token = body.access_token;
         return res.send({
           'access_token': access_token

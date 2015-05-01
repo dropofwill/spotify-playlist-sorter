@@ -63,6 +63,15 @@
 
 
   /*
+   * Basic building block for sending data to the client
+   */
+
+  utils.hash_builder = function(qs_obj) {
+    return '/#' + qs.stringify(qs_obj);
+  };
+
+
+  /*
    * Simple, local error passed as a hash url to the client
    */
 
@@ -71,7 +80,7 @@
       ec = "";
     }
     console.warn("Warning: " + err_msg + " " + ec);
-    return '/#' + qs.stringify({
+    return utils.hash_builder({
       error: err_msg
     });
   };
