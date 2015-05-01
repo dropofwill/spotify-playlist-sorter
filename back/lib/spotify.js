@@ -89,7 +89,26 @@
     };
   };
 
-  spotify.query_builder = function() {};
+  spotify.query_builder = function(endpoint, access_token, host, path) {
+    if (host == null) {
+      host = config.api_host;
+    }
+    if (path == null) {
+      path = config.api_path;
+    }
+    url.format({
+      protocol: 'https',
+      hostname: host,
+      pathname: path + endpoint
+    });
+    return {
+      url: url,
+      headers: {
+        'Authorization': 'Bearer ' + access_token
+      },
+      json: true
+    };
+  };
 
 }).call(this);
 

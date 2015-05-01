@@ -15,10 +15,6 @@ if (not process.env.SPOTIFY_CLIENT_ID     and
 redirect_uri  = process.env.UPM_REDIRECT_URI
 port          = parse(redirect_uri).port
 
-
-# auth_url      = path.resolve(accounts_base_url, auth_path)
-# token_url     = path.resolve(accounts_base_url, token_path)
-
 module.exports =
   client_id:      process.env.SPOTIFY_CLIENT_ID
   client_secret:  process.env.SPOTIFY_CLIENT_SECRET
