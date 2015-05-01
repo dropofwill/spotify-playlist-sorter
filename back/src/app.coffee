@@ -13,7 +13,6 @@ config       = require('./config')
 utils        = require('./utils')
 spotify      = require('./spotify')
 
-
 app = express()
    .set('views', config.views_dir)
    .set('view engine', config.view_engine)
@@ -65,13 +64,9 @@ app.get('/login', (req, res) ->
 ###
 app.get('/callback', (req, res) ->
 
-  code = req.query.code || null
-  state = req.query.state || null
-  stored_state = if req.cookies then req.cookies[config.state_key] else null
+  code = req.query.code ? null
 
-  if not state? || state isnt stored_state
-    res.redirect('/#' + qs.stringify(error: 'state_mismatch'))
-  else
+  if utils.client_has_correct_state(req)
     res.clearCookie(config.state_key)
     auth_options =
       url: 'https://accounts.spotify.com/api/token'
@@ -104,7 +99,9 @@ app.get('/callback', (req, res) ->
             access_token: access_token,
             refresh_token: refresh_token))
       else
-        res.redirect('/#' + qs.stringify(error: 'invalid_token'))))
+        res.redirect(utils.local_error_builder('invalid_token')))
+  else
+    res.redirect(utils.local_error_builder('state_mismatch')))
 
 app.get('/refresh_token', (req, res) ->
   # requesting access token from refresh token

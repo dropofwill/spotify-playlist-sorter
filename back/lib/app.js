@@ -96,15 +96,9 @@
    */
 
   app.get('/callback', function(req, res) {
-    var auth_options, code, state, stored_state;
-    code = req.query.code || null;
-    state = req.query.state || null;
-    stored_state = req.cookies ? req.cookies[config.state_key] : null;
-    if ((state == null) || state !== stored_state) {
-      return res.redirect('/#' + qs.stringify({
-        error: 'state_mismatch'
-      }));
-    } else {
+    var auth_options, code, ref;
+    code = (ref = req.query.code) != null ? ref : null;
+    if (utils.client_has_correct_state(req)) {
       res.clearCookie(config.state_key);
       auth_options = {
         url: 'https://accounts.spotify.com/api/token',
@@ -138,11 +132,11 @@
             refresh_token: refresh_token
           }));
         } else {
-          return res.redirect('/#' + qs.stringify({
-            error: 'invalid_token'
-          }));
+          return res.redirect(utils.local_error_builder('invalid_token'));
         }
       });
+    } else {
+      return res.redirect(utils.local_error_builder('state_mismatch'));
     }
   });
 

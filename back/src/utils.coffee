@@ -41,3 +41,22 @@ utils.log_server = (port, err) ->
     console.log(err)
   else
     console.log("===== Serving on port " + port + " ======")
+
+###
+# Simple, local error passed as a hash url to the client
+###
+utils.local_error_builder = (err) ->
+  '/#' + qs.stringify(error: err)
+
+###
+# Check whether the client after the request is the same as the client after
+# Takes the callbacks request object and returns a boolean
+###
+utils.client_has_correct_state = (req) ->
+  state = req.query.state ? null
+  stored_state = req.cookies?[config.state_key] ? null
+
+  console.log(state)
+  console.log(stored_state)
+
+  if state? and state is stored_state then true else false

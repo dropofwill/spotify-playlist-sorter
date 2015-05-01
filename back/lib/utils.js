@@ -61,6 +61,36 @@
     }
   };
 
+
+  /*
+   * Simple, local error passed as a hash url to the client
+   */
+
+  utils.local_error_builder = function(err) {
+    return '/#' + qs.stringify({
+      error: err
+    });
+  };
+
+
+  /*
+   * Check whether the client after the request is the same as the client after
+   * Takes the callbacks request object and returns a boolean
+   */
+
+  utils.client_has_correct_state = function(req) {
+    var ref, ref1, ref2, state, stored_state;
+    state = (ref = req.query.state) != null ? ref : null;
+    stored_state = (ref1 = (ref2 = req.cookies) != null ? ref2[config.state_key] : void 0) != null ? ref1 : null;
+    console.log(state);
+    console.log(stored_state);
+    if ((state != null) && state === stored_state) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
 }).call(this);
 
 //# sourceMappingURL=utils.js.map
