@@ -25,6 +25,6 @@ spotify.auth_builder = (state, host=config.accounts_host, path=config.auth_path,
       scope:          scope)
 
 
-spotify.build_token_req = () ->
+spotify.token_builder = () ->
 
-spotify.build_query_req = () ->
+spotify.query_builder = () ->

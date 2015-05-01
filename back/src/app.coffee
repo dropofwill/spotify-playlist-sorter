@@ -63,7 +63,6 @@ app.get('/login', (req, res) ->
 # after checking the state parameter
 ###
 app.get('/callback', (req, res) ->
-
   code = req.query.code ? null
 
   if utils.client_has_correct_state(req)
@@ -75,12 +74,11 @@ app.get('/callback', (req, res) ->
         redirect_uri: config.redirect_uri
         grant_type: 'authorization_code'
       headers:
-        'Authorization': 'Basic ' +
-        (new Buffer(config.client_id + ':' + config.client_secret).toString('base64'))
+        'Authorization': utils.basic_auth_header()
       json: true
 
     request.post(auth_options, (error, response, body) ->
-      if (!error && response.statusCode is 200)
+      if not error and response.statusCode is 200
         access_token = body.access_token
         refresh_token = body.refresh_token
 
@@ -109,14 +107,13 @@ app.get('/refresh_token', (req, res) ->
   auth_options =
     url: 'https://accounts.spotify.com/api/token'
     headers:
-      'Authorization': 'Basic ' +
-      (new Buffer(client_id + ':' + client_secret).toString('base64'))
+      'Authorization': utils.basic_auth_header()
     form:
       grant_type: 'refresh_token'
       refresh_token: refresh_token
     json: true
 
   request.post(auth_options, (error, response, body) ->
-    if (!error && response.statusCode is 200)
+    if not error and response.statusCode is 200
       access_token = body.access_token
       res.send('access_token': access_token)))

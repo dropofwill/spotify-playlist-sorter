@@ -82,13 +82,17 @@
     var ref, ref1, ref2, state, stored_state;
     state = (ref = req.query.state) != null ? ref : null;
     stored_state = (ref1 = (ref2 = req.cookies) != null ? ref2[config.state_key] : void 0) != null ? ref1 : null;
-    console.log(state);
-    console.log(stored_state);
     if ((state != null) && state === stored_state) {
       return true;
     } else {
       return false;
     }
+  };
+
+  utils.basic_auth_header = function() {
+    var client_info;
+    client_info = new Buffer(config.client_id + " : " + config.client_secret).toString('base64');
+    return "Basic " + client_info;
   };
 
 }).call(this);

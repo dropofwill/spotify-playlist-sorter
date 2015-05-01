@@ -42,9 +42,9 @@
     });
   };
 
-  spotify.build_token_req = function() {};
+  spotify.token_builder = function() {};
 
-  spotify.build_query_req = function() {};
+  spotify.query_builder = function() {};
 
 }).call(this);
 

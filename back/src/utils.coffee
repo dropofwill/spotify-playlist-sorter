@@ -56,7 +56,10 @@ utils.client_has_correct_state = (req) ->
   state = req.query.state ? null
   stored_state = req.cookies?[config.state_key] ? null
 
-  console.log(state)
-  console.log(stored_state)
-
   if state? and state is stored_state then true else false
+
+utils.basic_auth_header = () ->
+  client_info = new Buffer("#{config.client_id} : #{config.client_secret}")
+    .toString('base64')
+  "Basic #{client_info}"
+
