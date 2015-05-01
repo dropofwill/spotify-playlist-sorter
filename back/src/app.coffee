@@ -67,16 +67,6 @@ app.get('/callback', (req, res) ->
 
   if utils.client_has_correct_state(req)
     res.clearCookie(config.state_key)
-    auth_options =
-      url: 'https://accounts.spotify.com/api/token'
-      form:
-        code: code
-        redirect_uri: config.redirect_uri
-        grant_type: 'authorization_code'
-      headers:
-        'Authorization': utils.basic_auth_header()
-      json: true
-
     auth_options = spotify.token_builder(code)
 
     request.post(auth_options, (error, response, body) ->
@@ -99,7 +89,7 @@ app.get('/callback', (req, res) ->
             access_token: access_token,
             refresh_token: refresh_token))
       else
-        res.redirect(utils.local_error_builder(error, response.statusCode, response)))
+        res.redirect(utils.local_error_builder(error, response.statusCode)))
   else
     res.redirect(utils.local_error_builder('state_mismatch')))
 

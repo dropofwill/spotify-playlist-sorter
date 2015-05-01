@@ -45,8 +45,7 @@ utils.log_server = (port, err) ->
 ###
 # Simple, local error passed as a hash url to the client
 ###
-utils.local_error_builder = (err_msg, ec="", res="") ->
-  console.log(res)
+utils.local_error_builder = (err_msg, ec="") ->
   console.warn("Warning: #{err_msg} #{ec}")
   '/#' + qs.stringify(error: err_msg)
 

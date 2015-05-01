@@ -100,18 +100,6 @@
     code = (ref = req.query.code) != null ? ref : null;
     if (utils.client_has_correct_state(req)) {
       res.clearCookie(config.state_key);
-      auth_options = {
-        url: 'https://accounts.spotify.com/api/token',
-        form: {
-          code: code,
-          redirect_uri: config.redirect_uri,
-          grant_type: 'authorization_code'
-        },
-        headers: {
-          'Authorization': utils.basic_auth_header()
-        },
-        json: true
-      };
       auth_options = spotify.token_builder(code);
       return request.post(auth_options, function(error, response, body) {
         var access_token, options, ref1, refresh_token;
@@ -133,7 +121,7 @@
             refresh_token: refresh_token
           }));
         } else {
-          return res.redirect(utils.local_error_builder(error, response.statusCode, response));
+          return res.redirect(utils.local_error_builder(error, response.statusCode));
         }
       });
     } else {

@@ -66,14 +66,10 @@
    * Simple, local error passed as a hash url to the client
    */
 
-  utils.local_error_builder = function(err_msg, ec, res) {
+  utils.local_error_builder = function(err_msg, ec) {
     if (ec == null) {
       ec = "";
     }
-    if (res == null) {
-      res = "";
-    }
-    console.log(res);
     console.warn("Warning: " + err_msg + " " + ec);
     return '/#' + qs.stringify({
       error: err_msg
