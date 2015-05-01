@@ -1,7 +1,13 @@
 (function() {
-  var spotify;
+  var config, qs, spotify, url;
 
   spotify = exports;
+
+  qs = require('querystring');
+
+  url = require('url');
+
+  config = require('./config');
 
 
   /*
