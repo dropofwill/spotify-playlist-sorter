@@ -1,5 +1,5 @@
 (function() {
-  var app, config, cookieParser, express, fs, path, qs, request, server, url, utils;
+  var app, config, cookieParser, express, fs, path, qs, request, server, spotify, url, utils;
 
   require('coffee-script/register');
 
@@ -20,6 +20,8 @@
   config = require('./config');
 
   utils = require('./utils');
+
+  spotify = require('./spotify');
 
   app = express().set('views', config.views_dir).set('view engine', config.view_engine).disable('x-powered-by').use(express["static"]("front")).use(cookieParser());
 

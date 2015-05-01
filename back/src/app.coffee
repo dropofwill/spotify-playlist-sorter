@@ -11,6 +11,7 @@ fs           = require('fs')
 
 config       = require('./config')
 utils        = require('./utils')
+spotify      = require('./spotify')
 
 
 app = express()
