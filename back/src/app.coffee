@@ -21,6 +21,8 @@ app = express()
    .use(express.static("front"))
    .use(cookieParser())
 
+console.log(utils.auth_builder("yolo"))
+
 server = app.listen(config.port, (err) -> utils.log_server(config.port, err))
 
 ###
@@ -66,7 +68,10 @@ app.get('/login', (req, res) ->
       state:          state
       scope:          'user-read-private user-read-email'
 
-  url_str = url.format(object_url)
+  url_obj = utils.auth_builder(state)
+
+  url_str = url.format(url_obj)
+  console.log(url_str)
 
   res.redirect(url_str))
 

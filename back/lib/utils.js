@@ -1,11 +1,13 @@
 (function() {
-  var _, qs, utils;
+  var _, config, qs, utils;
 
   utils = exports;
 
   _ = require('lodash');
 
   qs = require('querystring');
+
+  config = require('./config');
 
 
   /*
@@ -40,7 +42,7 @@
    */
 
   utils.env_error = function() {
-    console.log("Please add the following to your shell env: \n SPOTIFY_CLIENT_ID='your_client_id'  \n SPOTIFY_CLIENT_SECRET='your_secret' \n UPM_REDIRECT_URI='the_redirect_uri' \n");
+    console.log("Please add the following to your shell env: \n SPOTIFY_CLIENT_ID='your_client_id'  \n SPOTIFY_CLIENT_SECRET='your_secret' \n UPM_REDIRECT_URI='your_redirect_uri' \n");
     return process.exit(1);
   };
 
@@ -71,6 +73,74 @@
     }
     query = qs.stringify(query_obj);
     return "" + base_url + hash_or_query + query;
+  };
+
+  utils.url_builder = function(pathname, o) {
+    if (o == null) {
+      o = {};
+    }
+    if (o.protocol == null) {
+      o.protocol = 'https';
+    }
+    if (o.hostname == null) {
+      o.hostname = config.api_host;
+    }
+    if (o.hash == null) {
+      o.hash = null;
+    }
+    if (o.response_type == null) {
+      o.response_type = 'code';
+    }
+    if (o.client_id == null) {
+      o.client_id = config.client_id;
+    }
+    if (o.redirect_uri == null) {
+      o.redirect_uri = config.redirect_uri;
+    }
+    if (o.state == null) {
+      o.state = null;
+    }
+    if (o.scope == null) {
+      o.scope = 'user-read-private user-read-email';
+    }
+    return {
+      protocol: o.protocol,
+      hostname: o.hostname,
+      hash: o.hash,
+      query: {
+        response_type: o.response_type,
+        client_id: o.client_id,
+        redirect_uri: o.redirect_uri,
+        state: o.state,
+        scope: o.scope
+      }
+    };
+  };
+
+  utils.auth_builder = function(state, host, path, scopes) {
+    var scope;
+    if (host == null) {
+      host = config.accounts_host;
+    }
+    if (path == null) {
+      path = config.auth_path;
+    }
+    if (scopes == null) {
+      scopes = ['user-read-private', 'user-read-email'];
+    }
+    scope = scopes.join(" ");
+    return {
+      protocol: 'https',
+      hostname: host,
+      pathname: path,
+      query: {
+        response_type: 'code',
+        client_id: config.client_id,
+        redirect_uri: config.redirect_uri,
+        state: state,
+        scope: scope
+      }
+    };
   };
 
 }).call(this);

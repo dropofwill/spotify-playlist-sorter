@@ -25,6 +25,8 @@
 
   app = express().set('views', config.views_dir).set('view engine', config.view_engine).disable('x-powered-by').use(express["static"]("front")).use(cookieParser());
 
+  console.log(utils.auth_builder("yolo"));
+
   server = app.listen(config.port, function(err) {
     return utils.log_server(config.port, err);
   });
@@ -94,7 +96,9 @@
         scope: 'user-read-private user-read-email'
       }
     };
-    url_str = url.format(object_url);
+    url_obj = utils.auth_builder(state);
+    url_str = url.format(url_obj);
+    console.log(url_str);
     return res.redirect(url_str);
   });
 

@@ -1,6 +1,8 @@
 utils = exports
-_ = require('lodash')
+_  = require('lodash')
 qs = require('querystring')
+
+config = require('./config')
 
 ###
 # Returns a random alpha-numeric character
@@ -26,7 +28,7 @@ utils.env_error = ->
   console.log("Please add the following to your shell env: \n
     SPOTIFY_CLIENT_ID='your_client_id'  \n
     SPOTIFY_CLIENT_SECRET='your_secret' \n
-    UPM_REDIRECT_URI='the_redirect_uri' \n
+    UPM_REDIRECT_URI='your_redirect_uri' \n
   ")
   process.exit(1)
 
@@ -47,3 +49,39 @@ utils.log_server = (port, err) ->
 utils.compose_url = (base_url, query_obj, hash_or_query="?") ->
   query = qs.stringify(query_obj)
   return "#{base_url}#{hash_or_query}#{query}"
+
+utils.url_builder = (pathname, o = {}) ->
+  o.protocol ?= 'https'
+  o.hostname ?=  config.api_host
+  o.hash     ?=  null
+
+  o.response_type ?= 'code'
+  o.client_id     ?= config.client_id
+  o.redirect_uri  ?= config.redirect_uri
+  o.state         ?= null
+  o.scope         ?= 'user-read-private user-read-email'
+
+  protocol: o.protocol
+  hostname: o.hostname
+  hash:     o.hash
+  query:
+    response_type: o.response_type
+    client_id:     o.client_id
+    redirect_uri:  o.redirect_uri
+    state:         o.state
+    scope:         o.scope
+
+utils.auth_builder = (state, host=config.accounts_host, path=config.auth_path,
+                      scopes=['user-read-private', 'user-read-email']) ->
+  scope = scopes.join(" ")
+
+  protocol: 'https'
+  hostname: host
+  pathname: path
+  query:
+    response_type:  'code'
+    client_id:      config.client_id
+    redirect_uri:   config.redirect_uri
+    state:          state
+    scope:          scope
+
