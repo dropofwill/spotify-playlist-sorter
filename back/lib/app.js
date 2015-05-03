@@ -102,13 +102,13 @@
       res.clearCookie(config.state_key);
       auth_options = spotify.token_builder(code);
       return request.post(auth_options, function(error, response, body) {
-        var access_token, me, options, refresh_token;
+        var access_token, options, refresh_token;
         if (utils.was_good_response(error, response)) {
           access_token = body.access_token;
           refresh_token = body.refresh_token;
           options = spotify.get_me(access_token);
-          me = null;
           request.get(options, function(error, response, body) {
+            var me;
             console.log(body);
             me = body.id;
             options = {

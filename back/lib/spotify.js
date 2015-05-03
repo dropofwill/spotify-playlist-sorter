@@ -96,18 +96,32 @@
    * with a / and include everything after the version number
    */
 
-  spotify.query_builder = function(endpoint, access_token, host, path) {
+  spotify.query_builder = function(endpoint, access_token, query_obj, host, path) {
+    if (query_obj == null) {
+      query_obj = null;
+    }
     if (host == null) {
       host = config.api_host;
     }
     if (path == null) {
       path = config.api_path;
     }
-    url = url.format({
-      protocol: 'https',
-      hostname: host,
-      pathname: path + endpoint
-    });
+    if (query_obj != null) {
+      url = url.format({
+        protocol: 'https'
+      }, {
+        hostname: host,
+        pathname: path + endpoint,
+        query: query_obj
+      });
+    } else {
+      url = url.format({
+        protocol: 'https'
+      }, {
+        hostname: host,
+        pathname: path + endpoint
+      });
+    }
     return {
       url: url,
       headers: {

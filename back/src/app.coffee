@@ -76,7 +76,6 @@ app.get('/callback', (req, res) ->
 
         options = spotify.get_me(access_token)
 
-        me = null
         # use the access token to access the Spotify Web API
         request.get(options, (error, response, body) ->
           console.log(body)
