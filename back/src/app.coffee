@@ -73,30 +73,24 @@ app.get('/callback', (req, res) ->
       if utils.was_good_response(error, response)
         access_token = body.access_token
         refresh_token = body.refresh_token
+        console.log(body)
 
-        get_me_opts = spotify.get_me_builder(access_token)
-
-        # use the access token to access the Spotify Web API
-        request.get(get_me_opts, (error, response, body) ->
-          console.log(body)
-          my_id = body.id
-
-          # options =
-          #   url: "https://api.spotify.com/v1/users/#{me}/playlists"
-          #   headers:
-          #     'Authorization': 'Bearer ' + access_token
-          #   json: true
-          my_playlists_opts = \
-            spotify.get_user_playlists_opts(access_token, my_id)
-
-            console.log(my_playlists_opts)
-
-          request.get(my_playlists_opts, (error, response, body) ->
-            if utils.was_good_response(error, response)
-              console.log(body)
-            else
-              console.log(error, response.statusCode)
-          ))
+        # get_me_opts = spotify.get_me_builder(access_token)
+        #
+        # # use the access token to access the Spotify Web API
+        # request.get(get_me_opts, (error, response, body) ->
+        #   console.log("User id: ", body.id)
+        #   my_id = body.id
+        #
+        #   my_playlists_opts = \
+        #     spotify.get_user_playlists_opts(access_token, my_id)
+        #
+        #   request.get(my_playlists_opts, (error, response, body) ->
+        #     if utils.was_good_response(error, response)
+        #       console.log(body)
+        #     else
+        #       console.log(error, response.statusCode)
+        #   ))
 
         # can also pass the token to the browser to make requests from there
         res.redirect(utils.hash_builder(
@@ -106,6 +100,8 @@ app.get('/callback', (req, res) ->
         res.redirect(utils.local_error_builder(error, response.statusCode)))
   else
     res.redirect(utils.local_error_builder('state_mismatch')))
+
+app.get('/playlists', (req, res) -> )
 
 app.get('/refresh_token', (req, res) ->
   # requesting access token from refresh token

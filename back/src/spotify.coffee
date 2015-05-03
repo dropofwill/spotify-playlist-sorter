@@ -48,7 +48,7 @@ spotify.token_builder = (code, grant='authorization_code',
 ###
 # Returns an options object for a post request to a previously created spotify
 # endpoint that is passed in as the first parameter. The endpoint should start
-# with a / and include everything after the version number
+# with a / and include everything after the version number (set in config)
 ###
 spotify.query_builder = (endpoint, access_token, query_obj=null,
                          host=config.api_host, path=config.api_path) ->
@@ -70,7 +70,7 @@ spotify.query_builder = (endpoint, access_token, query_obj=null,
   json: true
 
 ###
-# Returns an options object for a post request to retrieve info about the
+# Returns an options object for a request to retrieve info about the
 # currently logged in user.
 ###
 spotify.get_me_builder = (access_token, host=config.api_host,
@@ -78,8 +78,17 @@ spotify.get_me_builder = (access_token, host=config.api_host,
   spotify.query_builder("/me", access_token)
 
 ###
-# Returns an options object for a post request to retrieve a user's playlists
+# Returns an options object for a request to retrieve all the
+# user's playlists
 ###
 spotify.get_user_playlists_opts = (access_token, id, offset=null, limit=null
                                 host=config.api_host, path=config.api_path) ->
+  spotify.query_builder("/users/#{id}/playlists", access_token)
+
+###
+# Returns an options object for a request to retrieve a single playlist
+###
+spotify.get_a_playlist_opts = (access_token, user_id, playlist_id,
+                               offset=null, limit=null
+                               host=config.api_host, path=config.api_path) ->
   spotify.query_builder("/users/#{id}/playlists", access_token)

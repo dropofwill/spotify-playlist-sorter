@@ -102,25 +102,11 @@
       res.clearCookie(config.state_key);
       authorize_opts = spotify.token_builder(code);
       return request.post(authorize_opts, function(error, response, body) {
-        var access_token, get_me_opts, refresh_token;
+        var access_token, refresh_token;
         if (utils.was_good_response(error, response)) {
           access_token = body.access_token;
           refresh_token = body.refresh_token;
-          get_me_opts = spotify.get_me_builder(access_token);
-          request.get(get_me_opts, function(error, response, body) {
-            var my_id, my_playlists_opts;
-            console.log(body);
-            my_id = body.id;
-            my_playlists_opts = spotify.get_user_playlists_opts(access_token, my_id);
-            console.log(my_playlists_opts);
-            return request.get(my_playlists_opts, function(error, response, body) {
-              if (utils.was_good_response(error, response)) {
-                return console.log(body);
-              } else {
-                return console.log(error, response.statusCode);
-              }
-            });
-          });
+          console.log(body);
           return res.redirect(utils.hash_builder({
             access_token: access_token,
             refresh_token: refresh_token
@@ -133,6 +119,8 @@
       return res.redirect(utils.local_error_builder('state_mismatch'));
     }
   });
+
+  app.get('/playlists', function(req, res) {});
 
   app.get('/refresh_token', function(req, res) {
     var auth_options, refresh_token;
