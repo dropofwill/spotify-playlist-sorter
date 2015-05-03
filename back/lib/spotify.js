@@ -97,6 +97,7 @@
    */
 
   spotify.query_builder = function(endpoint, access_token, query_obj, host, path) {
+    var url_str;
     if (query_obj == null) {
       query_obj = null;
     }
@@ -107,21 +108,21 @@
       path = config.api_path;
     }
     if (query_obj != null) {
-      url = url.format({
+      url_str = url.format({
         protocol: 'https',
         hostname: host,
         pathname: path + endpoint,
         query: query_obj
       });
     } else {
-      url = url.format({
+      url_str = url.format({
         protocol: 'https',
         hostname: host,
         pathname: path + endpoint
       });
     }
     return {
-      url: url,
+      url: url_str,
       headers: {
         'Authorization': 'Bearer ' + access_token
       },
@@ -150,7 +151,7 @@
    * Returns an options object for a post request to retrieve a user's playlists
    */
 
-  spotify.get_my_playlists_builder = function(access_token, id, offset, limit, host, path) {
+  spotify.get_user_playlists_opts = function(access_token, id, offset, limit, host, path) {
     if (offset == null) {
       offset = null;
     }
@@ -163,7 +164,7 @@
     if (path == null) {
       path = config.api_path;
     }
-    return spotify.query_builder("/" + id + "/playlists", access_token);
+    return spotify.query_builder("/users/" + id + "/playlists", access_token);
   };
 
 }).call(this);

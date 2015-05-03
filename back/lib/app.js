@@ -96,31 +96,29 @@
    */
 
   app.get('/callback', function(req, res) {
-    var auth_options, code, ref;
+    var authorize_opts, code, ref;
     code = (ref = req.query.code) != null ? ref : null;
     if (utils.client_has_correct_state(req)) {
       res.clearCookie(config.state_key);
-      auth_options = spotify.token_builder(code);
-      return request.post(auth_options, function(error, response, body) {
-        var access_token, options, refresh_token;
+      authorize_opts = spotify.token_builder(code);
+      return request.post(authorize_opts, function(error, response, body) {
+        var access_token, get_me_opts, refresh_token;
         if (utils.was_good_response(error, response)) {
           access_token = body.access_token;
           refresh_token = body.refresh_token;
-          options = spotify.get_me_builder(access_token);
-          console.log(options);
-          request.get(options, function(error, response, body) {
-            var me;
+          get_me_opts = spotify.get_me_builder(access_token);
+          request.get(get_me_opts, function(error, response, body) {
+            var my_id, my_playlists_opts;
             console.log(body);
-            me = body.id;
-            options = {
-              url: "https://api.spotify.com/v1/users/" + me + "/playlists",
-              headers: {
-                'Authorization': 'Bearer ' + access_token
-              },
-              json: true
-            };
-            return request.get(options, function(error, response, body) {
-              return console.log(body);
+            my_id = body.id;
+            my_playlists_opts = spotify.get_user_playlists_opts(access_token, my_id);
+            console.log(my_playlists_opts);
+            return request.get(my_playlists_opts, function(error, response, body) {
+              if (utils.was_good_response(error, response)) {
+                return console.log(body);
+              } else {
+                return console.log(error, response.statusCode);
+              }
             });
           });
           return res.redirect(utils.hash_builder({
