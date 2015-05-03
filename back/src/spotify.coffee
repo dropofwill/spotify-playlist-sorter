@@ -53,14 +53,16 @@ spotify.token_builder = (code, grant='authorization_code',
 spotify.query_builder = (endpoint, access_token, query_obj=null,
                          host=config.api_host, path=config.api_path) ->
   if query_obj?
-    url = url.format(protocol: 'https',
-                     hostname: host,
-                     pathname: path + endpoint,
-                     query:    query_obj)
+    url = url.format(
+      protocol: 'https'
+      hostname: host
+      pathname: path + endpoint
+      query:    query_obj)
   else
-    url = url.format(protocol: 'https',
-                     hostname: host,
-                     pathname: path + endpoint)
+    url = url.format(
+      protocol: 'https'
+      hostname: host
+      pathname: path + endpoint)
 
   url: url
   headers:
@@ -69,3 +71,10 @@ spotify.query_builder = (endpoint, access_token, query_obj=null,
 
 spotify.get_me = (access_token, host=config.api_host, path=config.api_path) ->
   spotify.query_builder("/me", access_token)
+
+###
+# Returns an options object for a post request to retrieve a user's playlists
+###
+spotify.get_my_playlists_builder = (access_token, id, offset=null, limit=null
+                                host=config.api_host, path=config.api_path) ->
+  spotify.query_builder("/#{id}/playlists", access_token)

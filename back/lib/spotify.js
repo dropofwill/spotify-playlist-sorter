@@ -108,16 +108,14 @@
     }
     if (query_obj != null) {
       url = url.format({
-        protocol: 'https'
-      }, {
+        protocol: 'https',
         hostname: host,
         pathname: path + endpoint,
         query: query_obj
       });
     } else {
       url = url.format({
-        protocol: 'https'
-      }, {
+        protocol: 'https',
         hostname: host,
         pathname: path + endpoint
       });
@@ -139,6 +137,27 @@
       path = config.api_path;
     }
     return spotify.query_builder("/me", access_token);
+  };
+
+
+  /*
+   * Returns an options object for a post request to retrieve a user's playlists
+   */
+
+  spotify.get_my_playlists_builder = function(access_token, id, offset, limit, host, path) {
+    if (offset == null) {
+      offset = null;
+    }
+    if (limit == null) {
+      limit = null;
+    }
+    if (host == null) {
+      host = config.api_host;
+    }
+    if (path == null) {
+      path = config.api_path;
+    }
+    return spotify.query_builder("/" + id + "/playlists", access_token);
   };
 
 }).call(this);

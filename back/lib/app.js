@@ -107,6 +107,7 @@
           access_token = body.access_token;
           refresh_token = body.refresh_token;
           options = spotify.get_me(access_token);
+          console.log(options);
           request.get(options, function(error, response, body) {
             var me;
             console.log(body);
