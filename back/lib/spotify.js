@@ -106,26 +106,34 @@
     if (path == null) {
       path = config.api_path;
     }
-    return url = url.format({
-      protocol: 'https'
-    }, {
-      hostname: host,
-      pathname: path + endpoint
-    });
+    if (query_obj != null) {
+      url = url.format({
+        protocol: 'https',
+        hostname: host,
+        pathname: path + endpoint,
+        query: query_obj
+      });
+    } else {
+      url = url.format({
+        protocol: 'https',
+        hostname: host,
+        pathname: path + endpoint
+      });
+    }
+    return {
+      url: url,
+      headers: {
+        'Authorization': 'Bearer ' + access_token
+      },
+      json: true
+    };
   };
 
-  ({
-    url: url,
-    headers: {
-      'Authorization': 'Bearer ' + access_token
-    },
-    json: true
 
-    /*
-     * Returns an options object for a post request to retrieve info about the
-     * currently logged in user.
-     */
-  });
+  /*
+   * Returns an options object for a post request to retrieve info about the
+   * currently logged in user.
+   */
 
   spotify.get_me_builder = function(access_token, host, path) {
     if (host == null) {

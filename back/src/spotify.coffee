@@ -52,15 +52,17 @@ spotify.token_builder = (code, grant='authorization_code',
 ###
 spotify.query_builder = (endpoint, access_token, query_obj=null,
                          host=config.api_host, path=config.api_path) ->
-  # if query_obj?
-  #   url = url.format(protocol: 'https',
-  #                    hostname: host,
-  #                    pathname: path + endpoint,
-  #                    query:    query_obj)
-  # else
-    url = url.format(protocol: 'https',
-                     hostname: host,
-                     pathname: path + endpoint)
+  if query_obj?
+    url = url.format(
+      protocol: 'https'
+      hostname: host
+      pathname: path + endpoint
+      query:    query_obj)
+  else
+    url = url.format(
+      protocol: 'https'
+      hostname: host
+      pathname: path + endpoint)
 
   url: url
   headers:
