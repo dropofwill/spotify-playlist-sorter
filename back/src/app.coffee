@@ -67,36 +67,38 @@ app.get('/callback', (req, res) ->
 
   if utils.client_has_correct_state(req)
     res.clearCookie(config.state_key)
-    auth_options = spotify.token_builder(code)
+    auth_opts = spotify.token_builder(code)
 
-    request.post(auth_options, (error, response, body) ->
-      if utils.was_good_response(error, response)
-        access_token = body.access_token
-        refresh_token = body.refresh_token
-
-        options = spotify.get_me(access_token)
-
-        me = null
-        # use the access token to access the Spotify Web API
-        request.get(options, (error, response, body) ->
-          console.log(body)
-          me = body.id
-
-          options =
-            url: "https://api.spotify.com/v1/users/#{me}/playlists"
-            headers:
-              'Authorization': 'Bearer ' + access_token
-            json: true
-
-          request.get(options, (error, response, body) ->
-            console.log(body)))
-
-        # can also pass the token to the browser to make requests from there
-        res.redirect(utils.hash_builder(
-            access_token: access_token,
-            refresh_token: refresh_token))
-      else
-        res.redirect(utils.local_error_builder(error, response.statusCode)))
+    request.post(auth_opts, (error, response, body) ->
+      # if utils.was_good_response(error, response)
+      #   console.log("Access Token: ", body.access_token)
+      #   access_token = body.access_token
+      #   refresh_token = body.refresh_token
+      #
+      #   get_me_opts = spotify.get_me_builder(access_token)
+      #   console.log(get_me_opts)
+      #
+      #   # use the access token to access the Spotify Web API
+      #   request.get(get_me_opts, (error, response, body) ->
+      #     console.log(body)
+      #     me = body.id
+      #
+      #     options =
+      #       url: "https://api.spotify.com/v1/users/#{me}/playlists"
+      #       headers:
+      #         'Authorization': 'Bearer ' + access_token
+      #       json: true
+      #
+      #     request.get(options, (error, response, body) ->
+      #       console.log(body)))
+      #
+      #   # can also pass the token to the browser to make requests from there
+      #   res.redirect(utils.hash_builder(
+      #       access_token: access_token,
+      #       refresh_token: refresh_token))
+      # else
+      #   res.redirect(utils.local_error_builder(error, response.statusCode))
+      )
   else
     res.redirect(utils.local_error_builder('state_mismatch')))
 

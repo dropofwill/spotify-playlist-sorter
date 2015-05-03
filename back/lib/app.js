@@ -96,40 +96,12 @@
    */
 
   app.get('/callback', function(req, res) {
-    var auth_options, code, ref;
+    var auth_opts, code, ref;
     code = (ref = req.query.code) != null ? ref : null;
     if (utils.client_has_correct_state(req)) {
       res.clearCookie(config.state_key);
-      auth_options = spotify.token_builder(code);
-      return request.post(auth_options, function(error, response, body) {
-        var access_token, me, options, refresh_token;
-        if (utils.was_good_response(error, response)) {
-          access_token = body.access_token;
-          refresh_token = body.refresh_token;
-          options = spotify.get_me(access_token);
-          me = null;
-          request.get(options, function(error, response, body) {
-            console.log(body);
-            me = body.id;
-            options = {
-              url: "https://api.spotify.com/v1/users/" + me + "/playlists",
-              headers: {
-                'Authorization': 'Bearer ' + access_token
-              },
-              json: true
-            };
-            return request.get(options, function(error, response, body) {
-              return console.log(body);
-            });
-          });
-          return res.redirect(utils.hash_builder({
-            access_token: access_token,
-            refresh_token: refresh_token
-          }));
-        } else {
-          return res.redirect(utils.local_error_builder(error, response.statusCode));
-        }
-      });
+      auth_opts = spotify.token_builder(code);
+      return request.post(auth_opts, function(error, response, body) {});
     } else {
       return res.redirect(utils.local_error_builder('state_mismatch'));
     }

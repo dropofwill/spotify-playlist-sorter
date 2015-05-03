@@ -96,28 +96,38 @@
    * with a / and include everything after the version number
    */
 
-  spotify.query_builder = function(endpoint, access_token, host, path) {
+  spotify.query_builder = function(endpoint, access_token, query_obj, host, path) {
+    if (query_obj == null) {
+      query_obj = null;
+    }
     if (host == null) {
       host = config.api_host;
     }
     if (path == null) {
       path = config.api_path;
     }
-    url = url.format({
-      protocol: 'https',
+    return url = url.format({
+      protocol: 'https'
+    }, {
       hostname: host,
       pathname: path + endpoint
     });
-    return {
-      url: url,
-      headers: {
-        'Authorization': 'Bearer ' + access_token
-      },
-      json: true
-    };
   };
 
-  spotify.get_me = function(access_token, host, path) {
+  ({
+    url: url,
+    headers: {
+      'Authorization': 'Bearer ' + access_token
+    },
+    json: true
+
+    /*
+     * Returns an options object for a post request to retrieve info about the
+     * currently logged in user.
+     */
+  });
+
+  spotify.get_me_builder = function(access_token, host, path) {
     if (host == null) {
       host = config.api_host;
     }
@@ -125,6 +135,27 @@
       path = config.api_path;
     }
     return spotify.query_builder("/me", access_token);
+  };
+
+
+  /*
+   * Returns an options object for a post request to retrieve a user's playlists
+   */
+
+  spotify.get_my_playlists_builder = function(access_token, id, offset, limit, host, path) {
+    if (offset == null) {
+      offset = null;
+    }
+    if (limit == null) {
+      limit = null;
+    }
+    if (host == null) {
+      host = config.api_host;
+    }
+    if (path == null) {
+      path = config.api_path;
+    }
+    return spotify.query_builder("/" + id + "/playlists", access_token);
   };
 
 }).call(this);
