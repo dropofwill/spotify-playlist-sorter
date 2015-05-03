@@ -46,7 +46,7 @@
 
 
   /*
-   * Returns an options object for request to post to either retrieve an access
+   * Returns an options object for a post request to either retrieve an access
    * token (default) or refresh the current one (by passing in 'refresh_token' to
    * the grant param.
    */
@@ -89,6 +89,13 @@
     };
   };
 
+
+  /*
+   * Returns an options object for a post request to a previously created spotify
+   * endpoint that is passed in as the first parameter. The endpoint should start
+   * with a / and include everything after the version number
+   */
+
   spotify.query_builder = function(endpoint, access_token, host, path) {
     if (host == null) {
       host = config.api_host;
@@ -96,7 +103,7 @@
     if (path == null) {
       path = config.api_path;
     }
-    url.format({
+    url = url.format({
       protocol: 'https',
       hostname: host,
       pathname: path + endpoint
@@ -108,6 +115,16 @@
       },
       json: true
     };
+  };
+
+  spotify.get_me = function(access_token, host, path) {
+    if (host == null) {
+      host = config.api_host;
+    }
+    if (path == null) {
+      path = config.api_path;
+    }
+    return spotify.query_builder("/me", access_token);
   };
 
 }).call(this);

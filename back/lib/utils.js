@@ -67,7 +67,7 @@
    */
 
   utils.hash_builder = function(qs_obj) {
-    return '/#' + qs.stringify(qs_obj);
+    return "/#" + (qs.stringify(qs_obj));
   };
 
 
@@ -104,7 +104,7 @@
 
 
   /*
-   * Generate a base64 encoded string with the client id and secret
+   * Generate a base64 encoded buffer with the client id and secret divided by a :
    * Used when requesting token generation
    */
 
@@ -112,6 +112,20 @@
     var client_info;
     client_info = new Buffer(config.client_id + ":" + config.client_secret).toString('base64');
     return "Basic " + client_info;
+  };
+
+
+  /*
+   * Simple helper for checking whether a response was successful
+   */
+
+  utils.was_good_response = function(err, res) {
+    var ref;
+    if (!err && (200 >= (ref = res.statusCode) && ref < 300)) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
 }).call(this);

@@ -102,17 +102,11 @@
       res.clearCookie(config.state_key);
       auth_options = spotify.token_builder(code);
       return request.post(auth_options, function(error, response, body) {
-        var access_token, me, options, ref1, refresh_token;
-        if (!error && (200 >= (ref1 = response.statusCode) && ref1 < 300)) {
+        var access_token, me, options, refresh_token;
+        if (utils.was_good_response(error, response)) {
           access_token = body.access_token;
           refresh_token = body.refresh_token;
-          options = {
-            url: 'https://api.spotify.com/v1/me',
-            headers: {
-              'Authorization': 'Bearer ' + access_token
-            },
-            json: true
-          };
+          options = spotify.get_me(access_token);
           me = null;
           request.get(options, function(error, response, body) {
             console.log(body);
@@ -146,8 +140,8 @@
     refresh_token = req.query.refresh_token;
     auth_options = spotify.token_builder(code, 'refresh_token');
     return request.post(auth_options, function(error, response, body) {
-      var access_token, ref;
-      if (!error && (200 >= (ref = response.statusCode) && ref < 300)) {
+      var access_token;
+      if (utils.was_good_response(error, response)) {
         access_token = body.access_token;
         return res.send({
           'access_token': access_token

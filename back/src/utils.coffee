@@ -45,7 +45,7 @@ utils.log_server = (port, err) ->
 ###
 # Basic building block for sending data to the client
 ###
-utils.hash_builder = (qs_obj) -> '/#' + qs.stringify(qs_obj)
+utils.hash_builder = (qs_obj) -> "/##{qs.stringify(qs_obj)}"
 
 ###
 # Simple, local error passed as a hash url to the client
@@ -65,10 +65,16 @@ utils.client_has_correct_state = (req) ->
   if state? and state is stored_state then true else false
 
 ###
-# Generate a base64 encoded string with the client id and secret
+# Generate a base64 encoded buffer with the client id and secret divided by a :
 # Used when requesting token generation
 ###
 utils.basic_auth_header = () ->
   client_info = new Buffer("#{config.client_id}:#{config.client_secret}")
     .toString('base64')
   "Basic #{client_info}"
+
+###
+# Simple helper for checking whether a response was successful
+###
+utils.was_good_response = (err, res) ->
+  if not err and 200 >= res.statusCode < 300 then true else false

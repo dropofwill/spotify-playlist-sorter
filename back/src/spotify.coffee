@@ -26,7 +26,7 @@ spotify.auth_builder = (state, host=config.accounts_host,
       scope:          scope)
 
 ###
-# Returns an options object for request to post to either retrieve an access
+# Returns an options object for a post request to either retrieve an access
 # token (default) or refresh the current one (by passing in 'refresh_token' to
 # the grant param.
 ###
@@ -45,9 +45,14 @@ spotify.token_builder = (code, grant='authorization_code',
     'Authorization': utils.basic_auth_header()
   json: true
 
+###
+# Returns an options object for a post request to a previously created spotify
+# endpoint that is passed in as the first parameter. The endpoint should start
+# with a / and include everything after the version number
+###
 spotify.query_builder = (endpoint, access_token, host=config.api_host,
                          path=config.api_path) ->
-  url.format(
+  url = url.format(
     protocol: 'https'
     hostname: host
     pathname: path + endpoint)
@@ -56,3 +61,6 @@ spotify.query_builder = (endpoint, access_token, host=config.api_host,
   headers:
     'Authorization': 'Bearer ' + access_token
   json: true
+
+spotify.get_me = (access_token, host=config.api_host, path=config.api_path) ->
+  spotify.query_builder("/me", access_token)

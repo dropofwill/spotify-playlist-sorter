@@ -70,15 +70,11 @@ app.get('/callback', (req, res) ->
     auth_options = spotify.token_builder(code)
 
     request.post(auth_options, (error, response, body) ->
-      if not error and 200 >= response.statusCode < 300
+      if utils.was_good_response(error, response)
         access_token = body.access_token
         refresh_token = body.refresh_token
 
-        options =
-          url: 'https://api.spotify.com/v1/me'
-          headers:
-            'Authorization': 'Bearer ' + access_token
-          json: true
+        options = spotify.get_me(access_token)
 
         me = null
         # use the access token to access the Spotify Web API
@@ -93,8 +89,7 @@ app.get('/callback', (req, res) ->
             json: true
 
           request.get(options, (error, response, body) ->
-            console.log(body))
-        )
+            console.log(body)))
 
         # can also pass the token to the browser to make requests from there
         res.redirect(utils.hash_builder(
@@ -111,6 +106,6 @@ app.get('/refresh_token', (req, res) ->
   auth_options = spotify.token_builder(code, 'refresh_token')
 
   request.post(auth_options, (error, response, body) ->
-    if not error and 200 >= response.statusCode < 300
+    if utils.was_good_response(error, response)
       access_token = body.access_token
       res.send('access_token': access_token)))
