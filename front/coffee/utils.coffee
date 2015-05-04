@@ -32,31 +32,29 @@ window.l = (vals...) ->
 # global scope
 # prop: global property on the window object
 ###
-window.configGlobal = (prop) ->
-  () ->
-    window[prop] = window[prop] || {}
+window.config_global = (prop) ->
+  () -> window[prop] = window[prop] || {}
 
-window.configApp = configGlobal("app")
+window.config_app = config_global("app")
 
 ###
 # Obtains parameters from the hash of the URL, returns an object 
 # Global because it deals only with the window object
 ###
-window.getHashParams = ->
-  hashParams = {}
-  e = r = /([^&;=]+)=?([^&;]*)/g
-  q = window.location.hash.substring(1)
+window.get_hash_bang = -> location.hash.split("!")[1]
 
-  while e = r.exec(q)
-     hashParams[e[1]] = decodeURIComponent(e[2])
-
-  return hashParams
+###
+# Uses window.get_hash_bang to grab the playlist and user id from the url
+# takes a location.hash of the form '!#playlist_id|user_id'
+# Returns [playlist_id, user_id]
+###
+window.hash_to_user_and_playlist = -> get_hash_bang().split("|")
 
 ###
 # Obtains parameters from the hash of the URL, returns array of objects
 # Global because it deals only with the window object
 ###
-window.getHashPairs = ->
+window.get_hash_pairs = ->
   location.hash.substr(1).split('&').map((pair) ->
     kv = pair.split('=', 2)
     if kv.length is 2

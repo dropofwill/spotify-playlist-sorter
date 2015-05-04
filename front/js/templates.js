@@ -2,11 +2,11 @@
   "use strict";
   var app, templates;
 
-  app = window.configApp();
+  app = window.config_app();
 
   templates = {};
 
-  templates.user_playlists = _.template('<% _.forEach(data, function(playlist) { %>\n  <li>\n    <a href="playlists/#!<%= playlist.id %>"><%= playlist.name %></a>\n  </li>\n<% }); %>', {
+  templates.user_playlists = _.template('<% _.forEach(data, function(playlist) { %>\n  <li>\n    <a href="#!<%= playlist.id %>|<%= playlist.owner.id %>" id="<%= playlist.id %>" class="js-playlist-link">\n      <%= playlist.name %>\n    </a>\n  </li>\n<% }); %>', {
     variable: 'data'
   });
 

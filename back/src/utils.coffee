@@ -1,7 +1,7 @@
 utils = exports
-_    = require('lodash')
-qs   = require('querystring')
-url  = require('url')
+_     = require('lodash')
+qs    = require('querystring')
+url   = require('url')
 
 config = require('./config')
 

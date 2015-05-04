@@ -53,13 +53,13 @@
    * prop: global property on the window object
    */
 
-  window.configGlobal = function(prop) {
+  window.config_global = function(prop) {
     return function() {
       return window[prop] = window[prop] || {};
     };
   };
 
-  window.configApp = configGlobal("app");
+  window.config_app = config_global("app");
 
 
   /*
@@ -67,15 +67,19 @@
    * Global because it deals only with the window object
    */
 
-  window.getHashParams = function() {
-    var e, hashParams, q, r;
-    hashParams = {};
-    e = r = /([^&;=]+)=?([^&;]*)/g;
-    q = window.location.hash.substring(1);
-    while (e = r.exec(q)) {
-      hashParams[e[1]] = decodeURIComponent(e[2]);
-    }
-    return hashParams;
+  window.get_hash_bang = function() {
+    return location.hash.split("!")[1];
+  };
+
+
+  /*
+   * Uses window.get_hash_bang to grab the playlist and user id from the url
+   * takes a location.hash of the form '!#playlist_id|user_id'
+   * Returns [playlist_id, user_id]
+   */
+
+  window.hash_to_user_and_playlist = function() {
+    return get_hash_bang().split("|");
   };
 
 
@@ -84,7 +88,7 @@
    * Global because it deals only with the window object
    */
 
-  window.getHashPairs = function() {
+  window.get_hash_pairs = function() {
     return location.hash.substr(1).split('&').map(function(pair) {
       var kv;
       kv = pair.split('=', 2);

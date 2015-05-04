@@ -1,9 +1,9 @@
 spotify = exports
-qs   = require('querystring')
-url  = require('url')
+qs      = require('querystring')
+url     = require('url')
 
-config = require('./config')
-utils = require('./utils')
+config  = require('./config')
+utils   = require('./utils')
 
 ###
 # Returns a URL string for phase 1 of the OAuth 2 process

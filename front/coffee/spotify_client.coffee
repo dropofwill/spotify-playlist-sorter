@@ -1,6 +1,6 @@
 "use strict"
 
-app = window.configApp()
+app = window.config_app()
 
 class SpotifyClient
 
@@ -13,30 +13,36 @@ class SpotifyClient
     @user_id = get_user()
     @user_playlists = []
 
-  api_url: (endpoint, qs_obj = null) ->
-    if qs_obj?
-      qs = Url.stringify(qs_obj)
-      endpoint = "#{endpoint}?#{qs}"
-    endpoint
-
-  users_playlists_url: (user_id, qs_obj = null) =>
-    @api_url("#{@config.api_host}/users/#{user_id}/playlists", qs_obj)
-
-  playlist_tracks_url: (user_id, playlist_id, qs_obj = null) =>
-    @api_url(
-      "#{@config.api_host}/users/#{user_id}/playlists/#{playlist_id}/tracks",
-      qs_obj)
-
-  get_playlist_tracks: (playlist_id) =>
-    console.log(@playlist_tracks_url(@user_id, playlist_id, limit: 100))
-    @current_tracks = []
-    init_req = @playlist_tracks_url(@user_id, playlist_id, limit: 100)
-    @recursive_get_tracks(init_req)
-
+  ###
+  # Retrieve all of the logged in users' playlists, making multiple requests as
+  # necessary.
+  # Triggers the 'upm:playlistLoad' event when finished
+  ###
   get_users_playlists: () =>
-    # console.log(@users_playlists_url(@user_id, limit: 50))
     init_req = @users_playlists_url(@user_id, limit: 50)
     @recursive_get_playlists(init_req)
+
+  ###
+  # Retrieve all of the tracks from a given playlists, making multiple
+  # requests as necessary. If the playlist isn't owned by the current logged in
+  # user the owners id is required as a parameter,
+  # Triggers the 'upm:tracksLoad' event when finished
+  ###
+  get_playlist_tracks: (playlist_id, uid=@user_id) =>
+    @current_tracks = []
+    init_req = @playlist_tracks_url(uid, playlist_id, limit: 100)
+    @recursive_get_tracks(init_req)
+
+  render_playlists: (playlists_res) =>
+    app.templates.user_playlists(process_playlists(playlists_res))
+
+  users_playlists_url: (user_id, qs_obj=null) ->
+    api_url("#{@config.api_host}/users/#{user_id}/playlists", qs_obj)
+
+  playlist_tracks_url: (user_id, playlist_id, qs_obj=null) =>
+    api_url(
+      "#{@config.api_host}/users/#{user_id}/playlists/#{playlist_id}/tracks",
+      qs_obj)
 
   recursive_get_playlists: (req_url) =>
     $.ajax(
@@ -55,23 +61,35 @@ class SpotifyClient
       url: req_url
       headers: auth_header(@access)
       success: (res) =>
-        console.log(res)
-        # @current_tracks.push(res.items)
+        # console.log(res)
+        @current_tracks.push(res.items)
         if res.next?
           @recursive_get_tracks(res.next)
         else
           $(window).trigger('upm:tracksLoad'))
 
-  process_playlists: (playlists_res) =>
+  process_playlists = (playlists_res) =>
     data = _.chain(playlists_res)
       .flatten()
-      .map((playlist) -> _.pick(playlist, 'name', 'id'))
+      .map((playlist) -> _.pick(playlist, 'name', 'id', 'owner'))
       .value()
 
-  render_playlists: (playlists_res) =>
-    app.templates.user_playlists(@process_playlists(playlists_res))
+  process_playlist = (playlists_res) =>
 
+  ###
+  # Private helper method for encoding an OAuth 2.0 Bearer header
+  ###
   auth_header = (access) => 'Authorization': 'Bearer ' + access
+
+  ###
+  # Private helper method for building an api endpoint call, with and optional
+  # query string object
+  ###
+  api_url = (endpoint, qs_obj=null) ->
+    if qs_obj?
+      qs = Url.stringify(qs_obj)
+      endpoint = "#{endpoint}?#{qs}"
+    endpoint
 
 app.SpotifyClient = SpotifyClient
 

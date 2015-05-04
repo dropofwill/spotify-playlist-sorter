@@ -1,6 +1,6 @@
-parse        = require('url-parse')
-url          = require('url')
-path         = require('path')
+parse = require('url-parse')
+url   = require('url')
+path  = require('path')
 
 ###
 # If these environment variable are not set, we cannot continue

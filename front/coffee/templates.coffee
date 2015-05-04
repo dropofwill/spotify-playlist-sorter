@@ -1,13 +1,15 @@
 "use strict"
 
-app = window.configApp()
+app = window.config_app()
 
 templates = {}
 
 templates.user_playlists = _.template('''
   <% _.forEach(data, function(playlist) { %>
     <li>
-      <a href="playlists/#!<%= playlist.id %>"><%= playlist.name %></a>
+      <a href="#!<%= playlist.id %>|<%= playlist.owner.id %>" id="<%= playlist.id %>" class="js-playlist-link">
+        <%= playlist.name %>
+      </a>
     </li>
   <% }); %>
 ''', {variable: 'data'})

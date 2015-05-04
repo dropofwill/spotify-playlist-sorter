@@ -3,20 +3,18 @@
   var SpotifyClient, app,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  app = window.configApp();
+  app = window.config_app();
 
   SpotifyClient = (function() {
-    var auth_header;
+    var api_url, auth_header, process_playlist, process_playlists;
 
     function SpotifyClient() {
-      this.render_playlists = bind(this.render_playlists, this);
-      this.process_playlists = bind(this.process_playlists, this);
       this.recursive_get_tracks = bind(this.recursive_get_tracks, this);
       this.recursive_get_playlists = bind(this.recursive_get_playlists, this);
-      this.get_users_playlists = bind(this.get_users_playlists, this);
-      this.get_playlist_tracks = bind(this.get_playlist_tracks, this);
       this.playlist_tracks_url = bind(this.playlist_tracks_url, this);
-      this.users_playlists_url = bind(this.users_playlists_url, this);
+      this.render_playlists = bind(this.render_playlists, this);
+      this.get_playlist_tracks = bind(this.get_playlist_tracks, this);
+      this.get_users_playlists = bind(this.get_users_playlists, this);
       this.config = {
         api_host: "https://api.spotify.com/v1"
       };
@@ -26,43 +24,12 @@
       this.user_playlists = [];
     }
 
-    SpotifyClient.prototype.api_url = function(endpoint, qs_obj) {
-      var qs;
-      if (qs_obj == null) {
-        qs_obj = null;
-      }
-      if (qs_obj != null) {
-        qs = Url.stringify(qs_obj);
-        endpoint = endpoint + "?" + qs;
-      }
-      return endpoint;
-    };
 
-    SpotifyClient.prototype.users_playlists_url = function(user_id, qs_obj) {
-      if (qs_obj == null) {
-        qs_obj = null;
-      }
-      return this.api_url(this.config.api_host + "/users/" + user_id + "/playlists", qs_obj);
-    };
-
-    SpotifyClient.prototype.playlist_tracks_url = function(user_id, playlist_id, qs_obj) {
-      if (qs_obj == null) {
-        qs_obj = null;
-      }
-      return this.api_url(this.config.api_host + "/users/" + user_id + "/playlists/" + playlist_id + "/tracks", qs_obj);
-    };
-
-    SpotifyClient.prototype.get_playlist_tracks = function(playlist_id) {
-      var init_req;
-      console.log(this.playlist_tracks_url(this.user_id, playlist_id, {
-        limit: 100
-      }));
-      this.current_tracks = [];
-      init_req = this.playlist_tracks_url(this.user_id, playlist_id, {
-        limit: 100
-      });
-      return this.recursive_get_tracks(init_req);
-    };
+    /*
+     * Retrieve all of the logged in users' playlists, making multiple requests as
+     * necessary.
+     * Triggers the 'upm:playlistLoad' event when finished
+     */
 
     SpotifyClient.prototype.get_users_playlists = function() {
       var init_req;
@@ -70,6 +37,44 @@
         limit: 50
       });
       return this.recursive_get_playlists(init_req);
+    };
+
+
+    /*
+     * Retrieve all of the tracks from a given playlists, making multiple
+     * requests as necessary. If the playlist isn't owned by the current logged in
+     * user the owners id is required as a parameter,
+     * Triggers the 'upm:tracksLoad' event when finished
+     */
+
+    SpotifyClient.prototype.get_playlist_tracks = function(playlist_id, uid) {
+      var init_req;
+      if (uid == null) {
+        uid = this.user_id;
+      }
+      this.current_tracks = [];
+      init_req = this.playlist_tracks_url(uid, playlist_id, {
+        limit: 100
+      });
+      return this.recursive_get_tracks(init_req);
+    };
+
+    SpotifyClient.prototype.render_playlists = function(playlists_res) {
+      return app.templates.user_playlists(process_playlists(playlists_res));
+    };
+
+    SpotifyClient.prototype.users_playlists_url = function(user_id, qs_obj) {
+      if (qs_obj == null) {
+        qs_obj = null;
+      }
+      return api_url(this.config.api_host + "/users/" + user_id + "/playlists", qs_obj);
+    };
+
+    SpotifyClient.prototype.playlist_tracks_url = function(user_id, playlist_id, qs_obj) {
+      if (qs_obj == null) {
+        qs_obj = null;
+      }
+      return api_url(this.config.api_host + "/users/" + user_id + "/playlists/" + playlist_id + "/tracks", qs_obj);
     };
 
     SpotifyClient.prototype.recursive_get_playlists = function(req_url) {
@@ -95,7 +100,7 @@
         headers: auth_header(this.access),
         success: (function(_this) {
           return function(res) {
-            console.log(res);
+            _this.current_tracks.push(res.items);
             if (res.next != null) {
               return _this.recursive_get_tracks(res.next);
             } else {
@@ -106,21 +111,42 @@
       });
     };
 
-    SpotifyClient.prototype.process_playlists = function(playlists_res) {
+    process_playlists = function(playlists_res) {
       var data;
       return data = _.chain(playlists_res).flatten().map(function(playlist) {
-        return _.pick(playlist, 'name', 'id');
+        return _.pick(playlist, 'name', 'id', 'owner');
       }).value();
     };
 
-    SpotifyClient.prototype.render_playlists = function(playlists_res) {
-      return app.templates.user_playlists(this.process_playlists(playlists_res));
-    };
+    process_playlist = function(playlists_res) {};
+
+
+    /*
+     * Private helper method for encoding an OAuth 2.0 Bearer header
+     */
 
     auth_header = function(access) {
       return {
         'Authorization': 'Bearer ' + access
       };
+    };
+
+
+    /*
+     * Private helper method for building an api endpoint call, with and optional
+     * query string object
+     */
+
+    api_url = function(endpoint, qs_obj) {
+      var qs;
+      if (qs_obj == null) {
+        qs_obj = null;
+      }
+      if (qs_obj != null) {
+        qs = Url.stringify(qs_obj);
+        endpoint = endpoint + "?" + qs;
+      }
+      return endpoint;
     };
 
     return SpotifyClient;
