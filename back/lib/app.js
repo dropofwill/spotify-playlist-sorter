@@ -113,6 +113,7 @@
             return res.redirect(utils.query_builder('/playlists', {
               access_token: access_token,
               refresh_token: refresh_token,
+              echo_api_key: config.echo_api_key,
               user_id: my_id
             }));
           });
@@ -130,6 +131,7 @@
     return res.render('playlist', {
       access_token: req.query.access_token,
       refresh_token: req.query.refresh_token,
+      echo_api_key: req.query.echo_api_key,
       user_id: req.query.user_id
     });
   });

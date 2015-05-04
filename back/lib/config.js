@@ -13,7 +13,7 @@
    * Throw a warning and kill the process
    */
 
-  if (!process.env.SPOTIFY_CLIENT_ID && !process.env.SPOTIFY_CLIENT_SECRET && !process.env.UPM_REDIRECT_URI) {
+  if (!process.env.SPOTIFY_CLIENT_ID && !process.env.SPOTIFY_CLIENT_SECRET && !process.env.ECHO_API_KEY && !process.env.UPM_REDIRECT_URI) {
     utils.envError();
   }
 
@@ -24,6 +24,7 @@
   module.exports = {
     client_id: process.env.SPOTIFY_CLIENT_ID,
     client_secret: process.env.SPOTIFY_CLIENT_SECRET,
+    echo_api_key: process.env.ECHO_API_KEY,
     redirect_uri: redirect_uri,
     port: port,
     views_dir: path.resolve(path.join(__dirname, "../../views/")),

@@ -9,6 +9,7 @@ path  = require('path')
 
 if (not process.env.SPOTIFY_CLIENT_ID     and
     not process.env.SPOTIFY_CLIENT_SECRET and
+    not process.env.ECHO_API_KEY          and
     not process.env.UPM_REDIRECT_URI)
   utils.envError()
 
@@ -18,6 +19,7 @@ port          = parse(redirect_uri).port
 module.exports =
   client_id:      process.env.SPOTIFY_CLIENT_ID
   client_secret:  process.env.SPOTIFY_CLIENT_SECRET
+  echo_api_key:   process.env.ECHO_API_KEY
   redirect_uri:   redirect_uri
   port:           port
 

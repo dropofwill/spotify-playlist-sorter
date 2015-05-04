@@ -29,6 +29,7 @@ utils.env_error = ->
   console.log("Please add the following to your shell env: \n
     SPOTIFY_CLIENT_ID='your_client_id'  \n
     SPOTIFY_CLIENT_SECRET='your_secret' \n
+    ECHO_API_KEY='your_api_key' \n
     UPM_REDIRECT_URI='your_redirect_uri' \n
   ")
   process.exit(1)

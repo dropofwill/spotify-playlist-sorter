@@ -10,12 +10,14 @@ window.DEBUG = true
 window.set_tokens = (token_data) ->
   window.sessionStorage.setItem('access_token',  token_data.access_token)
   window.sessionStorage.setItem('refresh_token', token_data.refresh_token)
+  window.sessionStorage.setItem('echo_api_key',  token_data.echo_api_key)
   window.sessionStorage.setItem('user_id',       token_data.user_id)
 
 window.get_session = (key) -> window.sessionStorage.getItem(key)
 
 window.get_access  = -> get_session('access_token')
 window.get_refresh = -> get_session('refresh_token')
+window.get_echo    = -> get_session('echo_api_key')
 window.get_user    = -> get_session('user_id')
 
 ###

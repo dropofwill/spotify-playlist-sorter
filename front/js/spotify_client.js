@@ -13,11 +13,11 @@
       this.recursive_get_playlists = bind(this.recursive_get_playlists, this);
       this.playlist_tracks_url = bind(this.playlist_tracks_url, this);
       this.render_playlists = bind(this.render_playlists, this);
+      this.get_echo_track_data = bind(this.get_echo_track_data, this);
       this.get_playlist_tracks = bind(this.get_playlist_tracks, this);
       this.get_users_playlists = bind(this.get_users_playlists, this);
-      this.config = {
-        api_host: "https://api.spotify.com/v1"
-      };
+      this.spotify_api_host = "https://api.spotify.com/v1";
+      this.echo_api_host = "https://developer.echonest.com/api/v4";
       this.access = get_access();
       this.refresh = get_refresh();
       this.user_id = get_user();
@@ -59,6 +59,10 @@
       return this.recursive_get_tracks(init_req);
     };
 
+    SpotifyClient.prototype.get_echo_track_data = function(spotify_playlist_res) {
+      return console.log(spotify_playlist_res);
+    };
+
     SpotifyClient.prototype.render_playlists = function(playlists_res) {
       return app.templates.user_playlists(process_playlists(playlists_res));
     };
@@ -67,14 +71,14 @@
       if (qs_obj == null) {
         qs_obj = null;
       }
-      return api_url(this.config.api_host + "/users/" + user_id + "/playlists", qs_obj);
+      return api_url(this.spotify_api_host + "/users/" + user_id + "/playlists", qs_obj);
     };
 
     SpotifyClient.prototype.playlist_tracks_url = function(user_id, playlist_id, qs_obj) {
       if (qs_obj == null) {
         qs_obj = null;
       }
-      return api_url(this.config.api_host + "/users/" + user_id + "/playlists/" + playlist_id + "/tracks", qs_obj);
+      return api_url(this.spotify_api_host + "/users/" + user_id + "/playlists/" + playlist_id + "/tracks", qs_obj);
     };
 
     SpotifyClient.prototype.recursive_get_playlists = function(req_url) {

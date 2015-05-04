@@ -20,7 +20,8 @@ window.onload = ->
       console.log(ev.currentTarget.id)))
 
   app.$window.on('upm:tracksLoad', (e) ->
-    console.log(app.spotify.current_tracks))
+    console.log(app.spotify.current_tracks)
+    app.spotify.get_echo_track_data(app.spotify.current_tracks))
 
   app.$window.on('hashchange', app.page_load_logic)
 

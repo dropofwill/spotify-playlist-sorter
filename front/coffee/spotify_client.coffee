@@ -5,8 +5,8 @@ app = window.config_app()
 class SpotifyClient
 
   constructor: () ->
-    @config  =
-      api_host: "https://api.spotify.com/v1"
+    @spotify_api_host = "https://api.spotify.com/v1"
+    @echo_api_host    = "https://developer.echonest.com/api/v4"
 
     @access  = get_access()
     @refresh = get_refresh()
@@ -33,15 +33,20 @@ class SpotifyClient
     init_req = @playlist_tracks_url(uid, playlist_id, limit: 100)
     @recursive_get_tracks(init_req)
 
+  get_echo_track_data: (spotify_playlist_res) =>
+    console.log(spotify_playlist_res)
+
   render_playlists: (playlists_res) =>
     app.templates.user_playlists(process_playlists(playlists_res))
 
+
+
   users_playlists_url: (user_id, qs_obj=null) ->
-    api_url("#{@config.api_host}/users/#{user_id}/playlists", qs_obj)
+    api_url("#{@spotify_api_host}/users/#{user_id}/playlists", qs_obj)
 
   playlist_tracks_url: (user_id, playlist_id, qs_obj=null) =>
     api_url(
-      "#{@config.api_host}/users/#{user_id}/playlists/#{playlist_id}/tracks",
+      "#{@spotify_api_host}/users/#{user_id}/playlists/#{playlist_id}/tracks",
       qs_obj)
 
   recursive_get_playlists: (req_url) =>

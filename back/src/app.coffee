@@ -81,9 +81,10 @@ app.get('/callback', (req, res) ->
 
           res.redirect(
             utils.query_builder('/playlists',
-              access_token: access_token
+              access_token:  access_token
               refresh_token: refresh_token
-              user_id: my_id)))
+              echo_api_key:  config.echo_api_key
+              user_id:       my_id)))
       else
         res.redirect(utils.local_error_builder(error, response.statusCode)))
   else
@@ -94,6 +95,7 @@ app.get('/playlists', (req, res) ->
   res.render('playlist',
     access_token:  req.query.access_token
     refresh_token: req.query.refresh_token
+    echo_api_key:  req.query.echo_api_key
     user_id:       req.query.user_id))
 
 app.get('/refresh_token', (req, res) ->
