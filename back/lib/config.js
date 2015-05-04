@@ -36,7 +36,7 @@
     auth_path: '/authorize',
     token_path: '/api/token',
     api_path: '/v1',
-    scopes: ['user-read-private', 'user-read-email']
+    scopes: ['user-read-private', 'user-read-email', 'playlist-modify-public', 'playlist-modify-private', 'playlist-read-private']
   };
 
 }).call(this);
