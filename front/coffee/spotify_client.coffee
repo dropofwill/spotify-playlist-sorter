@@ -41,7 +41,7 @@ class SpotifyClient
   recursive_get_playlists: (req_url) =>
     $.ajax(
         url: req_url
-        headers: auth_header()
+        headers: auth_header(@access)
         success: (res) =>
           @user_playlists.push(res.items)
           # console.log(@user_playlists)
@@ -53,7 +53,7 @@ class SpotifyClient
   recursive_get_tracks: (req_url) =>
     $.ajax(
       url: req_url
-      headers: auth_header()
+      headers: auth_header(@access)
       success: (res) =>
         console.log(res)
         # @current_tracks.push(res.items)
@@ -71,7 +71,7 @@ class SpotifyClient
   render_playlists: (playlists_res) =>
     app.templates.user_playlists(@process_playlists(playlists_res))
 
-  auth_header = (access = @access) => 'Authorization': 'Bearer ' + access
+  auth_header = (access) => 'Authorization': 'Bearer ' + access
 
 app.SpotifyClient = SpotifyClient
 

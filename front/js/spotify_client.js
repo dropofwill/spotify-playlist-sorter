@@ -75,7 +75,7 @@
     SpotifyClient.prototype.recursive_get_playlists = function(req_url) {
       return $.ajax({
         url: req_url,
-        headers: auth_header(),
+        headers: auth_header(this.access),
         success: (function(_this) {
           return function(res) {
             _this.user_playlists.push(res.items);
@@ -92,7 +92,7 @@
     SpotifyClient.prototype.recursive_get_tracks = function(req_url) {
       return $.ajax({
         url: req_url,
-        headers: auth_header(),
+        headers: auth_header(this.access),
         success: (function(_this) {
           return function(res) {
             console.log(res);
@@ -118,9 +118,6 @@
     };
 
     auth_header = function(access) {
-      if (access == null) {
-        access = SpotifyClient.access;
-      }
       return {
         'Authorization': 'Bearer ' + access
       };
