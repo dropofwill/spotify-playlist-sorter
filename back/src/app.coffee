@@ -71,37 +71,28 @@ app.get('/callback', (req, res) ->
 
     request.post(authorize_opts, (error, response, body) ->
       if utils.was_good_response(error, response)
-        access_token = body.access_token
+        access_token  = body.access_token
         refresh_token = body.refresh_token
-        console.log(body)
 
-        # get_me_opts = spotify.get_me_builder(access_token)
-        #
-        # # use the access token to access the Spotify Web API
-        # request.get(get_me_opts, (error, response, body) ->
-        #   console.log("User id: ", body.id)
-        #   my_id = body.id
-        #
-        #   my_playlists_opts = \
-        #     spotify.get_user_playlists_opts(access_token, my_id)
-        #
-        #   request.get(my_playlists_opts, (error, response, body) ->
-        #     if utils.was_good_response(error, response)
-        #       console.log(body)
-        #     else
-        #       console.log(error, response.statusCode)
-        #   ))
+        request.get(get_me_opts, (error, response, body) ->
+          my_id = body.id
 
-        # can also pass the token to the browser to make requests from there
-        res.redirect(utils.hash_builder(
-            access_token: access_token,
-            refresh_token: refresh_token))
+          res.redirect(
+            utils.query_builder('/playlists',
+              access_token: access_token
+              refresh_token: refresh_token
+              user_id: my_id)))
       else
         res.redirect(utils.local_error_builder(error, response.statusCode)))
   else
     res.redirect(utils.local_error_builder('state_mismatch')))
 
-app.get('/playlists', (req, res) -> )
+app.get('/playlists', (req, res) ->
+  console.log(req.query)
+  res.render('playlist',
+    access_token:  req.query.access_token
+    refresh_token: req.query.refresh_token,
+    user_id:       req.query.user_id))
 
 app.get('/refresh_token', (req, res) ->
   # requesting access token from refresh token
@@ -112,3 +103,25 @@ app.get('/refresh_token', (req, res) ->
     if utils.was_good_response(error, response)
       access_token = body.access_token
       res.send('access_token': access_token)))
+
+# get_me_opts = spotify.get_me_builder(access_token)
+#
+# # use the access token to access the Spotify Web API
+# request.get(get_me_opts, (error, response, body) ->
+#   console.log("User id: ", body.id)
+#   my_id = body.id
+#
+#   my_playlists_opts = \
+#     spotify.get_user_playlists_opts(access_token, my_id)
+#
+#   request.get(my_playlists_opts, (error, response, body) ->
+#     if utils.was_good_response(error, response)
+#       console.log(body)
+#     else
+#       console.log(error, response.statusCode)
+#   ))
+
+# can also pass the token to the browser to make requests from there
+# res.redirect(utils.hash_builder(
+#     access_token: access_token,
+#     refresh_token: refresh_token))

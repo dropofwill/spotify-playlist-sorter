@@ -70,7 +70,7 @@ spotify.query_builder = (endpoint, access_token, query_obj=null,
   json: true
 
 ###
-# Returns an options object for a request to retrieve info about the
+# Returns an options object for a post request to retrieve info about the
 # currently logged in user.
 ###
 spotify.get_me_builder = (access_token, host=config.api_host,

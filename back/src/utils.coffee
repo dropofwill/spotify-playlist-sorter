@@ -47,6 +47,9 @@ utils.log_server = (port, err) ->
 ###
 utils.hash_builder = (qs_obj) -> "/##{qs.stringify(qs_obj)}"
 
+utils.query_builder = (path, qs_obj) ->
+  url.format(pathname: path, query: qs_obj)
+
 ###
 # Simple, local error passed as a hash url to the client
 ###

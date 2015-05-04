@@ -106,11 +106,15 @@
         if (utils.was_good_response(error, response)) {
           access_token = body.access_token;
           refresh_token = body.refresh_token;
-          console.log(body);
-          return res.redirect(utils.hash_builder({
-            access_token: access_token,
-            refresh_token: refresh_token
-          }));
+          return request.get(get_me_opts, function(error, response, body) {
+            var my_id;
+            my_id = body.id;
+            return res.redirect(utils.query_builder('/playlists', {
+              access_token: access_token,
+              refresh_token: refresh_token,
+              user_id: my_id
+            }));
+          });
         } else {
           return res.redirect(utils.local_error_builder(error, response.statusCode));
         }
@@ -120,7 +124,14 @@
     }
   });
 
-  app.get('/playlists', function(req, res) {});
+  app.get('/playlists', function(req, res) {
+    console.log(req.query);
+    return res.render('playlist', {
+      access_token: req.query.access_token,
+      refresh_token: req.query.refresh_token,
+      user_id: req.query.user_id
+    });
+  });
 
   app.get('/refresh_token', function(req, res) {
     var auth_options, refresh_token;

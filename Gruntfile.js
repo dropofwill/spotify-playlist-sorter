@@ -19,15 +19,26 @@ module.exports = function(grunt) {
       },
     },
 
-    // On the backend leave a 1:1 mapping for both file types
+    // 1:1 mapping from coffee to js
     coffee: {
-      compile: {
-        // 1:1 mapping through globs
+      backend: {
         expand: true,
         flatten: true,
         cwd: 'back/src/',
         src: ['*.coffee'],
         dest: 'back/lib/',
+        ext: '.js',
+        options: {
+          sourceMap: true
+        }
+      },
+
+      frontend: {
+        expand: true,
+        flatten: true,
+        cwd: 'front/coffee/',
+        src: ['*.coffee'],
+        dest: 'front/js/',
         ext: '.js',
         options: {
           sourceMap: true
@@ -54,5 +65,5 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('dev', [ 'coffee:compile', 'coffeeify:compile', 'sass' ]);
+  grunt.registerTask('dev', [ 'coffee:backend', 'coffee:frontend', 'sass' ]);
 };

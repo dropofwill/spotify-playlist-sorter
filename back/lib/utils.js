@@ -70,6 +70,13 @@
     return "/#" + (qs.stringify(qs_obj));
   };
 
+  utils.query_builder = function(path, qs_obj) {
+    return url.format({
+      pathname: path,
+      query: qs_obj
+    });
+  };
+
 
   /*
    * Simple, local error passed as a hash url to the client

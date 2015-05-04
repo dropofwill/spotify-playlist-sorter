@@ -1,0 +1,18 @@
+extend ./base.jade
+
+block content
+
+  script(type='text/javascript', src='js/utils.js')
+  script(type='text/javascript', src='js/templates.js')
+  script(type='text/javascript', src='js/spotify_client.js')
+  script(type='text/javascript', src='js/main.js')
+
+  h1 #{access_token}
+  h1 #{refresh_token}
+  h1 #{user_id}
+
+  if access_token && refresh_token
+    script.
+      set_tokens({"access_token":"#{access_token}",
+                  "refresh_token":"#{refresh_token}",
+                  "user_id": "#{user_id}"});

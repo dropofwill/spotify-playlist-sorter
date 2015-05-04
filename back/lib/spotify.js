@@ -132,7 +132,7 @@
 
 
   /*
-   * Returns an options object for a request to retrieve info about the
+   * Returns an options object for a post request to retrieve info about the
    * currently logged in user.
    */
 
