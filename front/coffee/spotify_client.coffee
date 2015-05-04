@@ -4,7 +4,7 @@ app = window.config_app()
 
 class SpotifyClient
 
-  constructor: () ->
+  constructor: ->
     @spotify_api_host = "https://api.spotify.com/v1"
     @echo_api_host    = "https://developer.echonest.com/api/v4"
 
@@ -18,7 +18,7 @@ class SpotifyClient
   # necessary.
   # Triggers the 'upm:playlistLoad' event when finished
   ###
-  get_users_playlists: () =>
+  get_users_playlists: =>
     init_req = @users_playlists_url(@user_id, limit: 50)
     @recursive_get_playlists(init_req)
 
@@ -34,7 +34,10 @@ class SpotifyClient
     @recursive_get_tracks(init_req)
 
   get_echo_track_data: (spotify_playlist_res) =>
-    console.log(spotify_playlist_res)
+    data = _.chain(spotify_playlist_res)
+      .flatten()
+      .map((track) -> _.get(track, 'track'))
+      .value()
 
   render_playlists: (playlists_res) =>
     app.templates.user_playlists(process_playlists(playlists_res))

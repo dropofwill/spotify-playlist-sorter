@@ -60,7 +60,10 @@
     };
 
     SpotifyClient.prototype.get_echo_track_data = function(spotify_playlist_res) {
-      return console.log(spotify_playlist_res);
+      var data;
+      return data = _.chain(spotify_playlist_res).flatten().map(function(track) {
+        return _.get(track, 'track');
+      }).value();
     };
 
     SpotifyClient.prototype.render_playlists = function(playlists_res) {

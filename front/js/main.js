@@ -19,8 +19,9 @@
       });
     });
     app.$window.on('upm:tracksLoad', function(e) {
-      console.log(app.spotify.current_tracks);
-      return app.spotify.get_echo_track_data(app.spotify.current_tracks);
+      var data;
+      data = app.spotify.get_echo_track_data(app.spotify.current_tracks);
+      return console.log(data);
     });
     return app.$window.on('hashchange', app.page_load_logic);
   };
