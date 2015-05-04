@@ -2,6 +2,8 @@ extend ./base.jade
 
 block content
 
+  script(type='text/javascript',
+    src='https://cdnjs.cloudflare.com/ajax/libs/urljs/1.1.0/url.min.js')
   script(type='text/javascript', src='js/utils.js')
   script(type='text/javascript', src='js/templates.js')
   script(type='text/javascript', src='js/spotify_client.js')
@@ -11,8 +13,14 @@ block content
   h1 #{refresh_token}
   h1 #{user_id}
 
+  section#js-playlists
+    ul#js-playlists-list
+
+  section#js-playlist
+    table#js-playlist-table
+
   if access_token && refresh_token
     script.
-      set_tokens({"access_token":"#{access_token}",
-                  "refresh_token":"#{refresh_token}",
-                  "user_id": "#{user_id}"});
+      set_tokens({"access_token":  "#{access_token}",
+                  "refresh_token": "#{refresh_token}",
+                  "user_id":       "#{user_id}"});

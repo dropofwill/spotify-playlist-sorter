@@ -36,3 +36,5 @@ module.exports =
   api_path:       '/v1'
 
   scopes:         ['user-read-private', 'user-read-email']
+                   # 'playlist-modify-public', 'playlist-modify-private',
+                   #, 'playlist-read-private'

@@ -102,10 +102,11 @@
       res.clearCookie(config.state_key);
       authorize_opts = spotify.token_builder(code);
       return request.post(authorize_opts, function(error, response, body) {
-        var access_token, refresh_token;
+        var access_token, get_me_opts, refresh_token;
         if (utils.was_good_response(error, response)) {
           access_token = body.access_token;
           refresh_token = body.refresh_token;
+          get_me_opts = spotify.get_me_builder(access_token);
           return request.get(get_me_opts, function(error, response, body) {
             var my_id;
             my_id = body.id;

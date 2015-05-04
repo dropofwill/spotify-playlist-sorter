@@ -74,6 +74,8 @@ app.get('/callback', (req, res) ->
         access_token  = body.access_token
         refresh_token = body.refresh_token
 
+        get_me_opts = spotify.get_me_builder(access_token)
+
         request.get(get_me_opts, (error, response, body) ->
           my_id = body.id
 
@@ -91,7 +93,7 @@ app.get('/playlists', (req, res) ->
   console.log(req.query)
   res.render('playlist',
     access_token:  req.query.access_token
-    refresh_token: req.query.refresh_token,
+    refresh_token: req.query.refresh_token
     user_id:       req.query.user_id))
 
 app.get('/refresh_token', (req, res) ->

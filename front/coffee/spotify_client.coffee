@@ -11,24 +11,67 @@ class SpotifyClient
     @access  = get_access()
     @refresh = get_refresh()
     @user_id = get_user()
+    @user_playlists = []
 
-    console.log(@get_users_playlists())
+  api_url: (endpoint, qs_obj = null) ->
+    if qs_obj?
+      qs = Url.stringify(qs_obj)
+      endpoint = "#{endpoint}?#{qs}"
+    endpoint
 
-  auth_header: (access = @access) =>
-    'Authorization': 'Bearer ' + access
+  users_playlists_url: (user_id, qs_obj = null) =>
+    @api_url("#{@config.api_host}/users/#{user_id}/playlists", qs_obj)
 
-  users_playlists_url: (user_id) =>
-    "#{@api_host}/users/#{user_id}/playlists"
+  playlist_tracks_url: (user_id, playlist_id, qs_obj = null) =>
+    @api_url(
+      "#{@config.api_host}/users/#{user_id}/playlists/#{playlist_id}/tracks",
+      qs_obj)
+
+  get_playlist_tracks: (playlist_id) =>
+    console.log(@playlist_tracks_url(@user_id, playlist_id, limit: 100))
+    @current_tracks = []
+    init_req = @playlist_tracks_url(@user_id, playlist_id, limit: 100)
+    @recursive_get_tracks(init_req)
 
   get_users_playlists: () =>
-    $.ajax(
-        url: @users_playlists_url(@user_id)
-        headers: @auth_header()
-        success: (res) -> console.log(res))
+    # console.log(@users_playlists_url(@user_id, limit: 50))
+    init_req = @users_playlists_url(@user_id, limit: 50)
+    @recursive_get_playlists(init_req)
 
-  render_playlists: (playlists_obj) =>
-    playlists_obj = {playlists: [{name: "yolo"}, {name: "swag"}]}
-    app.templates.user_playlists()
+  recursive_get_playlists: (req_url) =>
+    $.ajax(
+        url: req_url
+        headers: auth_header()
+        success: (res) =>
+          @user_playlists.push(res.items)
+          # console.log(@user_playlists)
+          if res.next?
+            @recursive_get_playlists(res.next)
+          else
+            $(window).trigger('upm:playlistsLoad'))
+
+  recursive_get_tracks: (req_url) =>
+    $.ajax(
+      url: req_url
+      headers: auth_header()
+      success: (res) =>
+        console.log(res)
+        # @current_tracks.push(res.items)
+        if res.next?
+          @recursive_get_tracks(res.next)
+        else
+          $(window).trigger('upm:tracksLoad'))
+
+  process_playlists: (playlists_res) =>
+    data = _.chain(playlists_res)
+      .flatten()
+      .map((playlist) -> _.pick(playlist, 'name', 'id'))
+      .value()
+
+  render_playlists: (playlists_res) =>
+    app.templates.user_playlists(@process_playlists(playlists_res))
+
+  auth_header = (access = @access) => 'Authorization': 'Bearer ' + access
 
 app.SpotifyClient = SpotifyClient
 
