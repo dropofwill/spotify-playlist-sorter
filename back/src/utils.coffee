@@ -32,7 +32,7 @@ utils.env_error = ->
     ECHO_API_KEY='your_api_key' \n
     UPM_REDIRECT_URI='your_redirect_uri' \n
   ")
-  process.exit(1)
+  # process.exit(1)
 
 ###
 # Give the console some nice feedback when starting the node server
