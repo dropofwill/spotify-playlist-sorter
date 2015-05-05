@@ -13,6 +13,7 @@ window.onload = ->
   app.dom_playlist_save        = $("#js-save-playlist")
   app.dom_playlist_save_name   = $("#js-save-playlist-name")
   app.dom_playlist_save_submit = $("#js-save-playlist-submit")
+  app.dom_ajax                 = $(".ajax")
 
   app.$window.on('hashchange', app.page_load_logic)
   app.page_load_logic()
@@ -44,6 +45,7 @@ window.onload = ->
 # Decide which view to load based on the hashbang url
 ###
 app.page_load_logic = ->
+  app.dom_ajax.removeClass("hide")
   if app.should_show_playlist()
     [playlist_id, user_id] = hash_to_user_and_playlist()
     app.spotify.get_playlist_tracks(playlist_id, user_id)
@@ -67,6 +69,7 @@ app.should_create_playlist = ->
 # Loads the 'page' for selecting a playlist, after the data has been collected
 ###
 app.show_list = (content) ->
+  app.dom_ajax.addClass("hide")
   app.dom_playlists_list.append(content)
   app.dom_playlist.addClass('hide')
   app.dom_playlists.removeClass('hide')
@@ -77,6 +80,7 @@ app.show_list = (content) ->
 # been collected
 ###
 app.show_table = (content) ->
+  app.dom_ajax.addClass("hide")
   app.dom_playlist_table.append(content)
   app.dom_playlists.addClass('hide')
   app.dom_playlist.removeClass('hide')

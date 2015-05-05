@@ -266,6 +266,11 @@ html, body {
   opacity: 0;
 }
 
+.ajax {
+  position: absolute;
+  right: 20px;
+}
+
 .playlists {
   list-style-type: none;
   padding-left: 0;

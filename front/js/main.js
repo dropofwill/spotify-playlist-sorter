@@ -14,6 +14,7 @@
     app.dom_playlist_save = $("#js-save-playlist");
     app.dom_playlist_save_name = $("#js-save-playlist-name");
     app.dom_playlist_save_submit = $("#js-save-playlist-submit");
+    app.dom_ajax = $(".ajax");
     app.$window.on('hashchange', app.page_load_logic);
     app.page_load_logic();
     app.$window.on('upm:playlistsLoad', function(e) {
@@ -46,6 +47,7 @@
 
   app.page_load_logic = function() {
     var playlist_id, ref, user_id;
+    app.dom_ajax.removeClass("hide");
     if (app.should_show_playlist()) {
       ref = hash_to_user_and_playlist(), playlist_id = ref[0], user_id = ref[1];
       return app.spotify.get_playlist_tracks(playlist_id, user_id);
@@ -92,6 +94,7 @@
    */
 
   app.show_list = function(content) {
+    app.dom_ajax.addClass("hide");
     app.dom_playlists_list.append(content);
     app.dom_playlist.addClass('hide');
     app.dom_playlists.removeClass('hide');
@@ -105,6 +108,7 @@
    */
 
   app.show_table = function(content) {
+    app.dom_ajax.addClass("hide");
     app.dom_playlist_table.append(content);
     app.dom_playlists.addClass('hide');
     app.dom_playlist.removeClass('hide');
