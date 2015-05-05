@@ -51,6 +51,11 @@ html, body {
   padding-left: 0;
 }
 
+.playlist {
+  text-align: left;
+  margin-top: 1em;
+}
+
 header {
   background: #0087e3;
   padding: 0.25rem;
@@ -119,5 +124,6 @@ hr {
   color: white;
   background: #81b900;
   padding: 6px 20px;
+  margin-right: 1em;
   text-decoration: none;
 }

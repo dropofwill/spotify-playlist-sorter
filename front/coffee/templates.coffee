@@ -21,7 +21,7 @@ templates.track_head = _.template('''
     <th>Dur.</th>
     <th>Tempo</th>
     <th>Key</th>
-    <th>Time Sig.</th>
+    <th>Sig.</th>
     <th>Pop.</th>
     <th>Val.</th>
     <th>Energy</th>

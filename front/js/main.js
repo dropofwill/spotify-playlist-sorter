@@ -11,6 +11,7 @@
     app.dom_playlists_list = $("#js-playlists-list");
     app.dom_playlist = $("#js-playlist");
     app.dom_playlist_table = $("#js-playlist-table");
+    app.$window.on('hashchange', app.page_load_logic);
     app.spotify.get_users_playlists();
     app.$window.on('upm:playlistsLoad', function(e) {
       var content;
@@ -21,14 +22,13 @@
       var data;
       return data = app.spotify.get_echo_track_data(app.spotify.current_tracks);
     });
-    app.$window.on('upm:echoLoad', function(e) {
+    return app.$window.on('upm:echoLoad', function(e) {
       var content, data;
       data = app.spotify.merge_echo_spotify();
       content = app.spotify.render_playlist(data);
       console.log(data);
       return app.show_table(content);
     });
-    return app.$window.on('hashchange', app.page_load_logic);
   };
 
   app.page_load_logic = function(e) {

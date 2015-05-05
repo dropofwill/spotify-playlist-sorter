@@ -10,6 +10,8 @@ window.onload = ->
   app.dom_playlist       = $("#js-playlist")
   app.dom_playlist_table = $("#js-playlist-table")
 
+  app.$window.on('hashchange', app.page_load_logic)
+
   app.spotify.get_users_playlists()
 
   app.$window.on('upm:playlistsLoad', (e) ->
@@ -27,8 +29,6 @@ window.onload = ->
     console.log(data)
     app.show_table(content)
   )
-
-  app.$window.on('hashchange', app.page_load_logic)
 
 app.page_load_logic = (e) ->
   if get_hash_bang() is "you"
