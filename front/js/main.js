@@ -54,7 +54,8 @@
     app.dom_playlist_table.append(content);
     app.dom_playlists.addClass('hide');
     app.dom_playlist.removeClass('hide');
-    return app.dom_playlists_list.empty();
+    app.dom_playlists_list.empty();
+    return app.dom_playlist_table.footable();
   };
 
 }).call(this);

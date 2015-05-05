@@ -14,6 +14,15 @@ templates.user_playlists = _.template('''
   <% }); %>
 ''', {variable: 'data'})
 
+templates.table_shell = _.template('''
+  <thead>
+    <%= data.head %>
+  </thead>
+  <tbody>
+    <%= data.body %>
+  </tbody>
+''', {variable: 'data'})
+
 templates.track_head = _.template('''
   <tr>
     <th>Title</th>

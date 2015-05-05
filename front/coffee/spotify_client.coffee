@@ -53,8 +53,11 @@ class SpotifyClient
     app.templates.user_playlists(process_playlists(playlists_res))
 
   render_playlist: (playlist_res) =>
-    app.templates.track_head() + _.reduce(playlist_res,
+    data = {}
+    data.head = app.templates.track_head()
+    data.body = _.reduce(playlist_res,
       (template, track) -> template + "\n" + app.templates.track(track))
+    app.templates.table_shell(data)
     
 
   ###

@@ -7,7 +7,8 @@ $dark:  #333;
 $light: #ccc;
 $white: #fff;
 
-@import "fonts";
+@import "front/styles/fonts";
+@import "front/styles/footable";
 
 html,body {
   font-family: "mark", sans-serif;
