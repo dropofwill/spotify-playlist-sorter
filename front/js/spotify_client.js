@@ -9,17 +9,20 @@
     var api_url, auth_header, process_playlist, process_playlists, reduce_spotify_tracks;
 
     function SpotifyClient() {
+      this.merge_echo_spotify = bind(this.merge_echo_spotify, this);
       this.recursive_get_tracks = bind(this.recursive_get_tracks, this);
       this.recursive_get_playlists = bind(this.recursive_get_playlists, this);
       this.get_echo_audio_summary = bind(this.get_echo_audio_summary, this);
       this.playlist_tracks_url = bind(this.playlist_tracks_url, this);
       this.echo_tracks_url = bind(this.echo_tracks_url, this);
+      this.render_playlist = bind(this.render_playlist, this);
       this.render_playlists = bind(this.render_playlists, this);
       this.get_echo_track_data = bind(this.get_echo_track_data, this);
       this.get_playlist_tracks = bind(this.get_playlist_tracks, this);
       this.get_users_playlists = bind(this.get_users_playlists, this);
       this.spotify_api_host = "https://api.spotify.com/v1";
       this.echo_api_host = "https://developer.echonest.com/api/v4";
+      this.max_playlist_size = 2;
       this.access = get_access();
       this.echo_key = get_echo();
       this.refresh = get_refresh();
@@ -59,7 +62,7 @@
       }
       this.current_tracks = [];
       init_req = this.playlist_tracks_url(uid, playlist_id, {
-        limit: 100
+        limit: 75
       });
       return this.recursive_get_tracks(init_req);
     };
@@ -81,6 +84,12 @@
 
     SpotifyClient.prototype.render_playlists = function(playlists_res) {
       return app.templates.user_playlists(process_playlists(playlists_res));
+    };
+
+    SpotifyClient.prototype.render_playlist = function(playlist_res) {
+      return _.reduce(playlist_res, function(template, track) {
+        return template + "\n" + app.templates.track(track);
+      });
     };
 
 
@@ -134,7 +143,7 @@
         success: (function(_this) {
           return function(res) {
             _this.user_playlists.push(res.items);
-            if (res.next != null) {
+            if ((res.next != null) && _this.user_playlists.length < _this.max_iterations) {
               return _this.recursive_get_playlists(res.next);
             } else {
               return $(window).trigger('upm:playlistsLoad');
@@ -151,7 +160,7 @@
         success: (function(_this) {
           return function(res) {
             _this.current_tracks.push(res.items);
-            if (res.next != null) {
+            if ((res.next != null) && _this.user_playlists.length < _this.max_iterations) {
               return _this.recursive_get_tracks(res.next);
             } else {
               return $(window).trigger('upm:tracksLoad');
@@ -168,13 +177,25 @@
       }).value();
     };
 
+    process_playlist = function(playlists_res) {};
+
     reduce_spotify_tracks = function(playlist_res) {
       return _.chain(playlist_res).flatten().map(function(track) {
         return _.get(track, 'track');
       }).value();
     };
 
-    process_playlist = function(playlists_res) {};
+    SpotifyClient.prototype.merge_echo_spotify = function(spotify_t, echo_t) {
+      if (spotify_t == null) {
+        spotify_t = this.spotify_tracks;
+      }
+      if (echo_t == null) {
+        echo_t = this.echo_tracks;
+      }
+      return _.merge(spotify_t, _.map(echo_t, function(track) {
+        return _.get(track, 'audio_summary');
+      }));
+    };
 
 
     /*

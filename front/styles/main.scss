@@ -1,7 +1,5 @@
 @charset "utf-8";
 
-/*//////////////////////////////////////////////////////////////////////////*/
-
 @font-face {
     font-family: 'mark';
     src: url(font-path('markregular-webfont.eot'));
@@ -50,8 +48,11 @@
     font-style: italic;
 }
 
-/*//////////////////////////////////////////////////////////////////////////*/
-
+$brand: #0087E3;
+$black: #000;
+$dark:  #333;
+$light: #ccc;
+$white: #fff;
 
 html,body {
   font-family: "mark", sans-serif;
@@ -63,9 +64,24 @@ html,body {
   box-sizing: border-box;
 }
 
+/* Transition all the javascript stuff */
+[id^="js"],
+[class^="js"] {
+  transition: all 1s ease;
+}
+
+.hide {
+  opacity: 0;
+}
+
+.playlists {
+  list-style-type: none;
+  padding-left: 0;
+}
+
 header {
-  background: #0087E3;
-  padding: 1.5em;
+  background: $brand;
+  padding: 1.25em;
 
   & > div {
     max-width: 60em;
@@ -75,10 +91,11 @@ header {
   h1 {
     font-size: 4em;
     line-height: 0.5;
+    color: $black;
   }
-  h2 {
+  h2, nav a {
     font-size: 1.5em;
-    color: white;
+    color: $white;
     font-weight: normal;
   }
 }

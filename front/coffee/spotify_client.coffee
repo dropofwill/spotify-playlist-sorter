@@ -7,6 +7,8 @@ class SpotifyClient
   constructor: ->
     @spotify_api_host = "https://api.spotify.com/v1"
     @echo_api_host    = "https://developer.echonest.com/api/v4"
+    # echonest rate limiting is annoying
+    @max_playlist_size = 2
 
     @access   = get_access()
     @echo_key = get_echo()
@@ -33,7 +35,7 @@ class SpotifyClient
   ###
   get_playlist_tracks: (playlist_id, uid=@user_id) =>
     @current_tracks = []
-    init_req = @playlist_tracks_url(uid, playlist_id, limit: 100)
+    init_req = @playlist_tracks_url(uid, playlist_id, limit: 75)
     @recursive_get_tracks(init_req)
 
   ###
@@ -49,6 +51,10 @@ class SpotifyClient
 
   render_playlists: (playlists_res) =>
     app.templates.user_playlists(process_playlists(playlists_res))
+
+  render_playlist: (playlist_res) =>
+    _.reduce(playlist_res, (template, track) ->
+        template + "\n" + app.templates.track(track))
 
   ###
   # Can't stringify track_ids because they would be duplicate hash keys
@@ -84,7 +90,7 @@ class SpotifyClient
         headers: auth_header(@access)
         success: (res) =>
           @user_playlists.push(res.items)
-          if res.next?
+          if res.next? and @user_playlists.length < @max_iterations
             @recursive_get_playlists(res.next)
           else
             $(window).trigger('upm:playlistsLoad'))
@@ -95,7 +101,7 @@ class SpotifyClient
       headers: auth_header(@access)
       success: (res) =>
         @current_tracks.push(res.items)
-        if res.next?
+        if res.next? and @user_playlists.length < @max_iterations
           @recursive_get_tracks(res.next)
         else
           $(window).trigger('upm:tracksLoad'))
@@ -106,14 +112,18 @@ class SpotifyClient
       .map((playlist) -> _.pick(playlist, 'name', 'id', 'owner'))
       .value()
 
+  process_playlist = (playlists_res) =>
+
   reduce_spotify_tracks = (playlist_res) ->
     _.chain(playlist_res)
         .flatten()
         .map((track) -> _.get(track, 'track'))
         .value()
 
+  merge_echo_spotify: (spotify_t=@spotify_tracks, echo_t=@echo_tracks) =>
+    _.merge(spotify_t,
+      _.map(echo_t, (track) -> _.get(track, 'audio_summary')))
 
-  process_playlist = (playlists_res) =>
 
   ###
   # Private helper method for encoding an OAuth 2.0 Bearer header

@@ -7,13 +7,15 @@
   window.onload = function() {
     app.$window = $(window);
     app.spotify = new app.SpotifyClient();
-    app.playlists_list = $("#js-playlists-list");
-    app.playlist_table = $("#js-playlist-table");
+    app.dom_playlists = $("#js-playlists");
+    app.dom_playlists_list = $("#js-playlists-list");
+    app.dom_playlist = $("#js-playlist");
+    app.dom_playlist_table = $("#js-playlist-table");
     app.spotify.get_users_playlists();
     app.$window.on('upm:playlistsLoad', function(e) {
       var content;
       content = app.spotify.render_playlists(app.spotify.user_playlists);
-      app.playlists_list.append(content);
+      app.show_list(content);
       return $('.js-playlist-link').on('click', function(ev) {
         return console.log(ev.currentTarget.id);
       });
@@ -23,17 +25,39 @@
       return data = app.spotify.get_echo_track_data(app.spotify.current_tracks);
     });
     app.$window.on('upm:echoLoad', function(e) {
-      console.log(app.spotify.spotify_tracks);
-      return console.log(app.spotify.echo_tracks);
+      var content, data;
+      data = app.spotify.merge_echo_spotify();
+      content = app.spotify.render_playlist(data);
+      return app.show_table(content);
     });
     return app.$window.on('hashchange', app.page_load_logic);
   };
 
   app.page_load_logic = function(e) {
     var playlist_id, ref, user_id;
-    ref = hash_to_user_and_playlist(), playlist_id = ref[0], user_id = ref[1];
-    console.log("Hash: ", playlist_id, user_id);
-    return app.spotify.get_playlist_tracks(playlist_id, user_id);
+    if (get_hash_bang() === "you") {
+      return app.spotify.get_users_playlists();
+    } else {
+      ref = hash_to_user_and_playlist(), playlist_id = ref[0], user_id = ref[1];
+      console.log(hash_to_user_and_playlist().length);
+      console.log(get_hash_bang());
+      console.log("Hash: ", playlist_id, user_id);
+      return app.spotify.get_playlist_tracks(playlist_id, user_id);
+    }
+  };
+
+  app.show_list = function(content) {
+    app.dom_playlists_list.append(content);
+    app.dom_playlist.addClass('hide');
+    app.dom_playlists.removeClass('hide');
+    return app.dom_playlist_table.empty();
+  };
+
+  app.show_table = function(content) {
+    app.dom_playlist_table.append(content);
+    app.dom_playlists.addClass('hide');
+    app.dom_playlist.removeClass('hide');
+    return app.dom_playlists_list.empty();
   };
 
 }).call(this);
