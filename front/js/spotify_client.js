@@ -87,7 +87,7 @@
     };
 
     SpotifyClient.prototype.render_playlist = function(playlist_res) {
-      return _.reduce(playlist_res, function(template, track) {
+      return app.templates.track_head() + _.reduce(playlist_res, function(template, track) {
         return template + "\n" + app.templates.track(track);
       });
     };

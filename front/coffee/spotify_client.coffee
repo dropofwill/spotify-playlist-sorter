@@ -53,8 +53,9 @@ class SpotifyClient
     app.templates.user_playlists(process_playlists(playlists_res))
 
   render_playlist: (playlist_res) =>
-    _.reduce(playlist_res, (template, track) ->
-        template + "\n" + app.templates.track(track))
+    app.templates.track_head() + _.reduce(playlist_res,
+      (template, track) -> template + "\n" + app.templates.track(track))
+    
 
   ###
   # Can't stringify track_ids because they would be duplicate hash keys

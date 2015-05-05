@@ -49,6 +49,7 @@
 }
 
 $brand: #0087E3;
+$high:  #81b900;
 $black: #000;
 $dark:  #333;
 $light: #ccc;
@@ -155,7 +156,7 @@ hr {
   user-select: none;
   border-radius: 500px;
   color: $white;
-  background: $brand;
+  background: $high;
   padding: 6px 20px;
   text-decoration: none;
 }

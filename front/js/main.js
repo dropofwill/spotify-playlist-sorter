@@ -15,10 +15,7 @@
     app.$window.on('upm:playlistsLoad', function(e) {
       var content;
       content = app.spotify.render_playlists(app.spotify.user_playlists);
-      app.show_list(content);
-      return $('.js-playlist-link').on('click', function(ev) {
-        return console.log(ev.currentTarget.id);
-      });
+      return app.show_list(content);
     });
     app.$window.on('upm:tracksLoad', function(e) {
       var data;
