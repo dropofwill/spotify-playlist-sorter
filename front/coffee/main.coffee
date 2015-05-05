@@ -31,6 +31,7 @@ window.onload = ->
     # console.log(app.spotify.echo_tracks)
     data = app.spotify.merge_echo_spotify()
     content = app.spotify.render_playlist(data)
+    console.log(data)
     app.show_table(content)
   )
 
@@ -42,7 +43,7 @@ app.page_load_logic = (e) ->
   else
     [playlist_id, user_id] = hash_to_user_and_playlist()
     console.log(hash_to_user_and_playlist().length)
-    console.log(get_hash_bang())
+    # console.log(get_hash_bang())
     console.log("Hash: ", playlist_id, user_id)
     app.spotify.get_playlist_tracks(playlist_id, user_id)
 

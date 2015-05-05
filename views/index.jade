@@ -1,6 +1,18 @@
 extend ./base.jade
 
 block content
-  #login
+  #intro.two-thirds
+    h1 Sort your playlists with upm
+
+    p Connect your Spotify playlists to the Echonest song profile API to learn a little bit more about the music you are listening too. Sort your music by a number of audio related features and save them out as new playlists.
+
+    h1 Available features
+
+    ul
+      li Time signature
+      li Dancability
+      li Hotttness
+
+  #login.one-third
     h1 Authorize upm
-    a.btn.btn-primary(href="/login") Log in with Spotify
+    a.btn(href="/login") Login with Spotify

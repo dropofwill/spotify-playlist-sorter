@@ -42,12 +42,12 @@
 
 
   /*
-   * Route for the page to experiment with the table interface
+   * Route for the documentation page
    */
 
-  app.get('/lab', function(req, res) {
-    return res.render('lab', {
-      title: 'Project'
+  app.get('/docs', function(req, res) {
+    return res.render('docs', {
+      title: 'Docs'
     });
   });
 
@@ -57,17 +57,6 @@
    */
 
   app.get('/proposal', function(req, res) {
-    return res.render('proposal', {
-      title: 'Proposal'
-    });
-  });
-
-
-  /*
-   * Route for the documentation page TODO: not just the proposal page
-   */
-
-  app.get('/documentation', function(req, res) {
     return res.render('proposal', {
       title: 'Proposal'
     });

@@ -81,27 +81,41 @@ html,body {
 
 header {
   background: $brand;
-  padding: 1.25em;
+  padding: 0.25rem;
 
-  & > div {
-    max-width: 60em;
-    margin: 2em auto;
+  & > * {
+    @extend .inner-content;
   }
 
-  h1 {
-    font-size: 4em;
+  h1,
+  h1 a {
+    font-size: 4.5rem;
     line-height: 0.5;
     color: $black;
   }
-  h2, nav a {
-    font-size: 1.5em;
+
+  h2,
+  nav span,
+  nav a {
+    font-size: 1.5rem;
     color: $white;
     font-weight: normal;
+    text-decoration: none;
   }
+}
+
+.inner-content {
+  max-width: 60em;
+  margin: 2em auto;
+  padding: 0 1em;
 }
 
 h1,h2,h3 {
   text-transform: lowercase;
+}
+
+h1 {
+  font-size: 2rem;
 }
 
 hr {
@@ -113,11 +127,35 @@ hr {
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-section {
+.content {
   background: #ffffff;
 
-  & > * {
-    max-width: 60em;
-    margin: 0 auto;
+  & > div {
+    @extend .inner-content;
   }
+}
+
+.one-third {
+  width: 33%;
+  float: left;
+  padding: 0;
+}
+
+.two-thirds {
+  width: 66%;
+  float: left;
+  padding: 0 2rem 0 0 ;
+}
+
+.btn {
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+  text-align: center;
+  user-select: none;
+  border-radius: 500px;
+  color: $white;
+  background: $brand;
+  padding: 6px 20px;
+  text-decoration: none;
 }

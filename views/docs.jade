@@ -2,25 +2,27 @@ extends ./base.jade
 
 block content
 
-  #h2 APIs used
-    ul
-      li Spotify API
-      li Echonest API
+  h2 APIs used
+  ul
+    li Spotify API
+    li Echonest API
 
-  #h2 Libraries used
-    ul
-      li JQuery + JQueryUI
-      li LoDash
-      li Node.js + Std Libs
-      li Bootpag
+  h2 Libraries used
+  h3 Frontend
+  ul
+    li JQuery + JQueryUI
+    li LoDash
 
-  #h2 Cool stuff done
-    ul
-      li Implemented OAuth 2.0 'authentication dance' to get access to private Spotify data
-      li Saved access tokens in HTML5 sessionStorage, to preserve session state
-      li Used hashbang routing to preserve back button functionality
-      li Implemented recursive method for parsing paginated API responses
-      li Used client side templating to describe the way JSON responses and HTML should be integrated more declaratively than simple string concatentation.
+  h3 Backend
+  ul
+    li Node.js + Std Libs
+    li Jade templates
 
-      li Implemented the drag-and-drop api on the 'tr' elements of a table
-
+  h2 Cool stuff done
+  ul
+    li Implemented OAuth 2.0 'authentication dance' to get access to private Spotify data
+    li Saved access tokens in HTML5 sessionStorage, to preserve session state
+    li Used hashbang routing to preserve back button functionality
+    li Implemented recursive method for parsing paginated API responses
+    li Used client side templating to describe the way JSON responses and HTML should be integrated more declaratively than simple string concatentation.
+    li Implemented the drag-and-drop api on the 'tr' elements of a table

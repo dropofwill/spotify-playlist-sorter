@@ -28,6 +28,7 @@
       var content, data;
       data = app.spotify.merge_echo_spotify();
       content = app.spotify.render_playlist(data);
+      console.log(data);
       return app.show_table(content);
     });
     return app.$window.on('hashchange', app.page_load_logic);
@@ -40,7 +41,6 @@
     } else {
       ref = hash_to_user_and_playlist(), playlist_id = ref[0], user_id = ref[1];
       console.log(hash_to_user_and_playlist().length);
-      console.log(get_hash_bang());
       console.log("Hash: ", playlist_id, user_id);
       return app.spotify.get_playlist_tracks(playlist_id, user_id);
     }

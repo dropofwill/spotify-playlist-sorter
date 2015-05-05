@@ -53,25 +53,35 @@ html, body {
 
 header {
   background: #0087e3;
-  padding: 1.25em;
+  padding: 0.25rem;
 }
-header > div {
-  max-width: 60em;
-  margin: 2em auto;
-}
-header h1 {
-  font-size: 4em;
+header h1,
+header h1 a {
+  font-size: 4.5rem;
   line-height: 0.5;
   color: black;
 }
-header h2, header nav a {
-  font-size: 1.5em;
+header h2,
+header nav span,
+header nav a {
+  font-size: 1.5rem;
   color: white;
   font-weight: normal;
+  text-decoration: none;
+}
+
+.inner-content, header > *, .content > div {
+  max-width: 60em;
+  margin: 2em auto;
+  padding: 0 1em;
 }
 
 h1, h2, h3 {
   text-transform: lowercase;
+}
+
+h1 {
+  font-size: 2rem;
 }
 
 hr {
@@ -83,10 +93,31 @@ hr {
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-section {
+.content {
   background: #ffffff;
 }
-section > * {
-  max-width: 60em;
-  margin: 0 auto;
+
+.one-third {
+  width: 33%;
+  float: left;
+  padding: 0;
+}
+
+.two-thirds {
+  width: 66%;
+  float: left;
+  padding: 0 2rem 0 0;
+}
+
+.btn {
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+  text-align: center;
+  user-select: none;
+  border-radius: 500px;
+  color: white;
+  background: #0087e3;
+  padding: 6px 20px;
+  text-decoration: none;
 }

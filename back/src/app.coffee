@@ -29,21 +29,15 @@ app.get('/', (req, res) ->
   res.render('index', title: 'Project'))
 
 ###
-# Route for the page to experiment with the table interface
+# Route for the documentation page
 ###
-app.get('/lab', (req, res) ->
-  res.render('lab', title: 'Project'))
+app.get('/docs', (req, res) ->
+  res.render('docs', title: 'Docs'))
 
 ###
 # Route for the proposal page
 ###
 app.get('/proposal', (req, res) ->
-  res.render('proposal', title: 'Proposal'))
-
-###
-# Route for the documentation page TODO: not just the proposal page
-###
-app.get('/documentation', (req, res) ->
   res.render('proposal', title: 'Proposal'))
 
 ###
