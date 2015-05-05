@@ -30,7 +30,6 @@ window.onload = ->
   app.$window.on('upm:echoLoad', (e) ->
     data = app.spotify.merge_echo_spotify()
     content = app.spotify.render_playlist(data)
-    console.log(data)
     app.show_table(content)
   )
 

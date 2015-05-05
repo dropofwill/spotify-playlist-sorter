@@ -29,7 +29,6 @@
       var content, data;
       data = app.spotify.merge_echo_spotify();
       content = app.spotify.render_playlist(data);
-      console.log(data);
       return app.show_table(content);
     });
     return app.dom_playlist_save_submit.on("click", function(e) {

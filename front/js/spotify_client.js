@@ -88,11 +88,9 @@
       track_ids = _.map($('#js-playlist-table tbody tr'), function(el) {
         return $(el).attr("id");
       });
-      console.log(track_ids);
       return this.post_create_playlist(create_url, playlist_id, (function(_this) {
         return function(res) {
           var tracks_url;
-          console.log(res);
           tracks_url = _this.add_playlist_url(res.id);
           return _this.post_tracks_to_playlist(tracks_url, track_ids);
         };
@@ -237,7 +235,6 @@
     };
 
     SpotifyClient.prototype.post_create_playlist = function(req_url, name, callback) {
-      console.log(req_url);
       return $.ajax({
         url: req_url,
         method: 'POST',

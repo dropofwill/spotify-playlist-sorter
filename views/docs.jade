@@ -9,19 +9,18 @@ block content
   pre.
     ├── back
     │   └── lib
-    │       ├── app.js #
-    │       ├── auth.js
-    │       ├── config.js
-    │       ├── spotify.js
-    │       └── utils.js
+    │       ├── app.js     # Main Express logic and routes
+    │       ├── config.js  # Variable used throughout
+    │       ├── spotify.js # Authentication and Spotify query building
+    │       └── utils.js   # Utility functions not specific to any part of the app
     ├── front
     │   ├── fonts
     │   ├── imgs
     │   ├── js
-    │   │   ├── main.js
-    │   │   ├── spotify_client.js
-    │   │   ├── templates.js
-    │   │   └── utils.js
+    │   │   ├── main.js           # Client side application flow, hash bang routing, etc.
+    │   │   ├── spotify_client.js # Querying the spotify API from the client
+    │   │   ├── templates.js      # Lodash templates for the frontend
+    │   │   └── utils.js          # Utility methods used throughout the frontend
     │   └── styles
     │       └── main.css
     ├── index.html
@@ -35,9 +34,13 @@ block content
 
   h2 Design Decisions
 
-  Went for a light, minimalist theme with colorful highlights that go along with the color schemes of Spotify and Echonest to create that association. Font used was Mark, chosen for the same aforementioned reasons.
+  p Went for a light, minimalist theme with colorful highlights that go along with the color schemes of Spotify and Echonest to create that association. Font used was Mark, chosen for the same aforementioned reasons.
 
   h2 Technical Decisions
+
+  p Since I needed to do OAuth for the Spotify API, I decided against battling gibson and PHP and made an Node.js/Express server to handle authentication. Basically the server handles the OAuth login and callback from the Spotify and then serves the static templates.
+
+  p The client saves the keys from the server in sessionStorage so that the client can do all the actual data gathering. Echonest just API key and no OAuth.
 
   h2 APIs used
   ul
@@ -78,3 +81,4 @@ block content
   h3 Code concepts
   ul
     li For OAuth I learned a lot from the <a href="https://developer.spotify.com/web-api/authorization-guide/"authorization guide</a>, but implemented in my own way.
+    li Used the <a href="http://www.ffmark.com">FF Mark font</a>

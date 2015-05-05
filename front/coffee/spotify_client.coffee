@@ -52,10 +52,8 @@ class SpotifyClient
     create_url = @create_playlist_url()
     track_ids = _.map($('#js-playlist-table tbody tr'), (el) ->
         $(el).attr("id"))
-    console.log(track_ids)
 
     @post_create_playlist(create_url, playlist_id, (res) =>
-      console.log(res)
       tracks_url = @add_playlist_url(res.id)
       @post_tracks_to_playlist(tracks_url, track_ids)
     )
@@ -151,11 +149,6 @@ class SpotifyClient
           $(window).trigger('upm:tracksLoad'))
 
   post_create_playlist: (req_url, name, callback) =>
-    console.log(req_url)
-    # $.post(
-    #   url: req_url
-    #   data: JSON.stringify({"name": name, "public": false})
-    #   success: (res) => console.log(res))
     $.ajax(
       url: req_url
       method: 'POST'
