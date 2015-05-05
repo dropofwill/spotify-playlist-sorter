@@ -73,7 +73,7 @@
    */
 
   window.get_hash_bang = function() {
-    return location.hash.split("!")[1];
+    return window.location.hash.split("!")[1];
   };
 
 
@@ -84,7 +84,8 @@
    */
 
   window.hash_to_user_and_playlist = function() {
-    return get_hash_bang().split("|");
+    var ref;
+    return (ref = window.get_hash_bang()) != null ? ref.split("|") : void 0;
   };
 
 

@@ -43,7 +43,7 @@ templates.track_head = _.template('''
 templates.track = _.template('''
   <tr>
     <td><%= track.name %></td>
-    <td><%= track.artists[0].name %></td>
+    <td><%= track.artists %></td>
     <td><%= track.duration %></td>
     <td><%= track.tempo %></td>
     <td><%= track.key %></td>

@@ -6,7 +6,7 @@
   app = window.config_app();
 
   SpotifyClient = (function() {
-    var api_url, auth_header, process_playlist, process_playlists, reduce_spotify_tracks;
+    var api_url, auth_header, process_playlists, reduce_spotify_tracks;
 
     function SpotifyClient() {
       this.merge_echo_spotify = bind(this.merge_echo_spotify, this);
@@ -30,6 +30,7 @@
       this.user_playlists = [];
       this.echo_tracks = [];
       this.spotify_tracks = [];
+      this.key_list = ["C", "C&#x266F;", "D", "E&#x266d;", "E", "F", "F&#x266F;", "G", "A&#x266d;", "A", "B&#x266d;", "B"];
     }
 
 
@@ -181,8 +182,6 @@
       }).value();
     };
 
-    process_playlist = function(playlists_res) {};
-
     reduce_spotify_tracks = function(playlist_res) {
       return _.chain(playlist_res).flatten().map(function(track) {
         return _.get(track, 'track');
@@ -190,15 +189,27 @@
     };
 
     SpotifyClient.prototype.merge_echo_spotify = function(spotify_t, echo_t) {
+      var merged, self;
       if (spotify_t == null) {
         spotify_t = this.spotify_tracks;
       }
       if (echo_t == null) {
         echo_t = this.echo_tracks;
       }
-      return _.merge(spotify_t, _.map(echo_t, function(track) {
+      self = this;
+      merged = _.merge(spotify_t, _.map(echo_t, function(track) {
         return _.get(track, 'audio_summary');
       }));
+      return _.map(merged, function(o) {
+        return _.forEach(o, function(v, k) {
+          switch (k) {
+            case 'key':
+              return _.set(o, k, self.key_list[v]);
+            case 'artists':
+              return _.set(o, k, _.get(_.first(v), 'name'));
+          }
+        });
+      });
     };
 
 

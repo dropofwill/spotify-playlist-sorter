@@ -17,6 +17,9 @@ class SpotifyClient
     @user_playlists = []
     @echo_tracks = []
     @spotify_tracks = []
+    
+    @key_list = [ "C", "C&#x266F;", "D", "E&#x266d;", "E", "F", "F&#x266F;",
+                  "G", "A&#x266d;", "A", "B&#x266d;", "B"]
 
   ###
   # Retrieve all of the logged in users' playlists, making multiple requests as
@@ -116,8 +119,6 @@ class SpotifyClient
       .map((playlist) -> _.pick(playlist, 'name', 'id', 'owner'))
       .value()
 
-  process_playlist = (playlists_res) =>
-
   reduce_spotify_tracks = (playlist_res) ->
     _.chain(playlist_res)
         .flatten()
@@ -125,9 +126,18 @@ class SpotifyClient
         .value()
 
   merge_echo_spotify: (spotify_t=@spotify_tracks, echo_t=@echo_tracks) =>
-    _.merge(spotify_t,
+    self = this
+    merged = _.merge(spotify_t,
       _.map(echo_t, (track) -> _.get(track, 'audio_summary')))
 
+    _.map(merged, (o) ->
+      _.forEach(o, (v,k) ->
+        switch k
+          when 'key'      then _.set(o, k, self.key_list[v])
+          when 'artists'  then _.set(o, k, _.get(_.first(v), 'name'))
+          # when 'duration' then _.set(o, k, 
+        )
+      )
 
   ###
   # Private helper method for encoding an OAuth 2.0 Bearer header

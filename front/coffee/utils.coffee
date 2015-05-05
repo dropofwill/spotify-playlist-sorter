@@ -43,14 +43,14 @@ window.config_app = config_global("app")
 # Obtains parameters from the hash of the URL, returns an object 
 # Global because it deals only with the window object
 ###
-window.get_hash_bang = -> location.hash.split("!")[1]
+window.get_hash_bang = -> window.location.hash.split("!")[1]
 
 ###
 # Uses window.get_hash_bang to grab the playlist and user id from the url
 # takes a location.hash of the form '!#playlist_id|user_id'
 # Returns [playlist_id, user_id]
 ###
-window.hash_to_user_and_playlist = -> get_hash_bang().split("|")
+window.hash_to_user_and_playlist = -> window.get_hash_bang()?.split("|")
 
 ###
 # Obtains parameters from the hash of the URL, returns array of objects

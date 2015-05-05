@@ -12,15 +12,14 @@
     app.dom_playlist = $("#js-playlist");
     app.dom_playlist_table = $("#js-playlist-table");
     app.$window.on('hashchange', app.page_load_logic);
-    app.spotify.get_users_playlists();
+    app.page_load_logic();
     app.$window.on('upm:playlistsLoad', function(e) {
       var content;
       content = app.spotify.render_playlists(app.spotify.user_playlists);
       return app.show_list(content);
     });
     app.$window.on('upm:tracksLoad', function(e) {
-      var data;
-      return data = app.spotify.get_echo_track_data(app.spotify.current_tracks);
+      return app.spotify.get_echo_track_data(app.spotify.current_tracks);
     });
     return app.$window.on('upm:echoLoad', function(e) {
       var content, data;
@@ -31,17 +30,39 @@
     });
   };
 
-  app.page_load_logic = function(e) {
+
+  /*
+   * Decide which view to load based on the hashbang url
+   */
+
+  app.page_load_logic = function() {
     var playlist_id, ref, user_id;
-    if (get_hash_bang() === "you") {
-      return app.spotify.get_users_playlists();
-    } else {
+    if (app.should_show_playlist()) {
       ref = hash_to_user_and_playlist(), playlist_id = ref[0], user_id = ref[1];
-      console.log(hash_to_user_and_playlist().length);
-      console.log("Hash: ", playlist_id, user_id);
       return app.spotify.get_playlist_tracks(playlist_id, user_id);
+    } else {
+      return app.spotify.get_users_playlists();
     }
   };
+
+
+  /*
+   * Check if the hash bang is of the form "playlist_id|user_id"
+   */
+
+  app.should_show_playlist = function() {
+    var ref;
+    if (((ref = hash_to_user_and_playlist()) != null ? ref.length : void 0) === 2) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+
+  /*
+   * Loads the 'page' for selecting a playlist, after the data has been collected
+   */
 
   app.show_list = function(content) {
     app.dom_playlists_list.append(content);
@@ -49,6 +70,12 @@
     app.dom_playlists.removeClass('hide');
     return app.dom_playlist_table.empty();
   };
+
+
+  /*
+   * Loads the 'page' for interacting with a playlist, after the data has
+   * been collected
+   */
 
   app.show_table = function(content) {
     app.dom_playlist_table.append(content);
