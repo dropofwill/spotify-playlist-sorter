@@ -2,30 +2,25 @@ extends ./base.jade
 
 block content
 
+  h1 upm: docs
+  h2 sort your Spotify playlists based on acoustic features
+
+  h2 Architecture
+
+  h2 Design Decisions
+
+  h2 Technical Decisions
+
   h2 APIs used
   ul
-    li Spotify API
+    li 
+      a(href='https://developer.spotify.com/web-api/working-with-playlists/') Spotify
     li Echonest API
 
-  h2 Browser Technologies
-  ul
-    li HTML5 sessionStorage - I store your login creds in sessionStorage, so that you don't have to reauthenticate on page reload.
-    li HTML5 drag-and-drop API
+  h2 Extra HTML5 Browser Technology
+  HTML5 sessionStorage - I store your login creds in sessionStorage, so that you don't have to reauthenticate on page reload.
 
-  h2 Libraries used
-  h3 Frontend
-  ul
-    li JQuery
-    li LoDash - client-side templating
-    li Url.js - for building up the requests cleanly
-    li FooTable
-
-  h3 Backend
-  ul
-    li Node.js + Std Libs
-    li Jade templates
-
-  h2 Cool stuff done
+  h2 Other cool stuff
   ul
     li Implemented OAuth 2.0 'authentication dance' to get access to private Spotify data
     li Saved access tokens in HTML5 sessionStorage, to preserve session state
@@ -33,3 +28,17 @@ block content
     li Implemented recursive method for parsing paginated API responses
     li Used client side templating to describe the way JSON responses and HTML should be integrated more declaratively than simple string concatentation.
     li Implemented the drag-and-drop api on the 'tr' elements of a table
+
+  h2 Libraries used
+  h3 Frontend
+  ul
+    li JQuery - primarily ajax and event abstraction
+    li LoDash - client-side templating and functional data manipulation
+    li Url.js - for building up the ajax requests cleanly
+    li FooTable - a sortable data grid
+
+  h3 Backend
+  ul
+    li Node.js + Std Libs
+    li Jade templates
+
