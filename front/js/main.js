@@ -72,6 +72,11 @@
     }
   };
 
+
+  /*
+   * Check if the hash bang is for showing playlist
+   */
+
   app.should_show_playlists = function() {
     if (get_hash_bang() === "you") {
       return true;

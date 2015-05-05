@@ -59,6 +59,9 @@ app.page_load_logic = ->
 app.should_show_playlist = ->
   if hash_to_user_and_playlist()?.length is 2 then true else false
 
+###
+# Check if the hash bang is for showing playlist
+###
 app.should_show_playlists = ->
   if get_hash_bang() is "you" then true else false
 

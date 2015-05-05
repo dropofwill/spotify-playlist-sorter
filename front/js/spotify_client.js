@@ -117,13 +117,28 @@
       return this.get_echo_audio_summary(this.echo_tracks_url(this.track_ids));
     };
 
+
+    /*
+     * Takes an array of track objects and returns an array of track uris
+     */
+
     SpotifyClient.prototype.pluck_ids = function(tracks) {
       return _.pluck(tracks, 'uri');
     };
 
+
+    /*
+     * Takes a parsed response and renders a lodash template of html
+     */
+
     SpotifyClient.prototype.render_playlists = function(playlists_res) {
       return app.templates.user_playlists(process_playlists(playlists_res));
     };
+
+
+    /*
+     * Takes a parsed response and renders a lodash template of html
+     */
 
     SpotifyClient.prototype.render_playlist = function(playlist_res) {
       var data;
