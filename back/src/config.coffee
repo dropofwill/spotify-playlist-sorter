@@ -14,7 +14,7 @@ if (not process.env.SPOTIFY_CLIENT_ID     and
   utils.envError()
 
 redirect_uri  = process.env.UPM_REDIRECT_URI
-port          = parse(redirect_uri).port
+port          = process.env.PORT || parse(redirect_uri).port
 
 module.exports =
   client_id:      process.env.SPOTIFY_CLIENT_ID
