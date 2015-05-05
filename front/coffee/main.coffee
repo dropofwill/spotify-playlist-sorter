@@ -10,6 +10,10 @@ window.onload = ->
   app.dom_playlist       = $("#js-playlist")
   app.dom_playlist_table = $("#js-playlist-table")
 
+  app.dom_playlist_save        = $("#js-save-playlist")
+  app.dom_playlist_save_name   = $("#js-save-playlist-name")
+  app.dom_playlist_save_submit = $("#js-save-playlist-submit")
+
   app.$window.on('hashchange', app.page_load_logic)
   app.page_load_logic()
 
@@ -29,6 +33,13 @@ window.onload = ->
     app.show_table(content)
   )
 
+  app.dom_playlist_save_submit.on("click", (e) ->
+    e.preventDefault()
+    # console.log(app.dom_playlist_save_name.attr("value"))
+    name = app.dom_playlist_save_name.attr("value")
+    app.spotify.create_playlist(name)
+  )
+
 ###
 # Decide which view to load based on the hashbang url
 ###
@@ -36,14 +47,21 @@ app.page_load_logic = ->
   if app.should_show_playlist()
     [playlist_id, user_id] = hash_to_user_and_playlist()
     app.spotify.get_playlist_tracks(playlist_id, user_id)
+  else if app.should_create_playlist()
   else
     app.spotify.get_users_playlists()
 
 ###
 # Check if the hash bang is of the form "playlist_id|user_id"
 ###
-app.should_show_playlist = () ->
+app.should_show_playlist = ->
   if hash_to_user_and_playlist()?.length is 2 then true else false
+
+app.should_show_playlists = ->
+  if get_hash_bang() is "you" then true else false
+
+app.should_create_playlist = ->
+  if get_hash_bang() is "new" then true else false
 
 ###
 # Loads the 'page' for selecting a playlist, after the data has been collected
@@ -64,3 +82,5 @@ app.show_table = (content) ->
   app.dom_playlist.removeClass('hide')
   app.dom_playlists_list.empty()
   app.dom_playlist_table.footable()
+
+  app.dom_playlist_save_name.attr("value", "upm#{_.now()}")

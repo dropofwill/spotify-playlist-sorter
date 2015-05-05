@@ -10,6 +10,8 @@ block content
   script(type='text/javascript', src='js/spotify_client.js')
   script(type='text/javascript', src='js/main.js')
 
+  img(src="../front/imgs/ajax-loader.gif")
+
   section#js-playlists.hide
 
     h1 your playlists
@@ -20,7 +22,12 @@ block content
 
     a.btn(href="/playlists#!you") &laquo; Back
 
-    a.btn(href="/playlists#!new") Create Playlist
+    form#js-save-playlist.save-playlist
+      span Name:
+
+      input(type="text")#js-save-playlist-name
+
+      a.btn(href="#")#js-save-playlist-submit Save Playlist
 
     table#js-playlist-table.playlist.footable
 

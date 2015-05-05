@@ -17,7 +17,8 @@ class SpotifyClient
     @user_playlists = []
     @echo_tracks = []
     @spotify_tracks = []
-    
+    @track_ids = []
+
     @key_list = [ "C", "C&#x266F;", "D", "E&#x266d;", "E", "F", "F&#x266F;",
                   "G", "A&#x266d;", "A", "B&#x266d;", "B"]
     @mode_list = [ "Min.", "Maj." ]
@@ -43,6 +44,25 @@ class SpotifyClient
     @recursive_get_tracks(init_req)
 
   ###
+  # Creates a playlist and upon completion add the current tracks to it
+  # Currently throwing a 403 despite correct user scopes, may be a bug in the
+  # Spotify API
+  ###
+  create_playlist: (playlist_id) =>
+    create_url = @create_playlist_url()
+    track_ids = _.map($('#js-playlist-table tbody tr'), (el) ->
+        $(el).attr("id"))
+    console.log(track_ids)
+
+    @post_create_playlist(create_url, playlist_id, (res) =>
+      console.log(res)
+      tracks_url = @add_playlist_url(res.id)
+      @post_tracks_to_playlist(tracks_url, track_ids)
+    )
+
+  logger: (res) -> console.log(res, @current_tracks)
+
+  ###
   # Reduce the spotify response to just an array of track objects
   # Extract just the track_ids
   # Make an ajax request to echonest for the meta data
@@ -50,8 +70,10 @@ class SpotifyClient
   ###
   get_echo_track_data: (spotify_playlist_res) =>
     @spotify_tracks = reduce_spotify_tracks(spotify_playlist_res)
-    track_ids = _.pluck(@spotify_tracks, 'uri')
-    @get_echo_audio_summary(@echo_tracks_url(track_ids))
+    @track_ids = _.pluck(@spotify_tracks, 'uri')
+    @get_echo_audio_summary(@echo_tracks_url(@track_ids))
+
+  pluck_ids: (tracks) -> _.pluck(tracks, 'uri')
 
   render_playlists: (playlists_res) =>
     app.templates.user_playlists(process_playlists(playlists_res))
@@ -62,7 +84,6 @@ class SpotifyClient
     data.body = _.reduce(playlist_res,
       (template, track) -> template + "\n" + app.templates.track(track))
     app.templates.table_shell(data)
-    
 
   ###
   # Can't stringify track_ids because they would be duplicate hash keys
@@ -84,6 +105,12 @@ class SpotifyClient
     api_url(
       "#{@spotify_api_host}/users/#{user_id}/playlists/#{playlist_id}/tracks",
       qs_obj)
+
+  create_playlist_url: =>
+    api_url("#{@spotify_api_host}/users/#{@user_id}/playlists")
+
+  add_playlist_url: (playlist_id) =>
+    api_url("#{@spotify_api_host}/users/#{@user_id}/playlists/#{playlist_id}/tracks")
 
   get_echo_audio_summary: (req_url) =>
     $.ajax(
@@ -113,6 +140,32 @@ class SpotifyClient
           @recursive_get_tracks(res.next)
         else
           $(window).trigger('upm:tracksLoad'))
+
+  post_create_playlist: (req_url, name, callback) =>
+    console.log(req_url)
+    # $.post(
+    #   url: req_url
+    #   data: JSON.stringify({"name": name, "public": false})
+    #   success: (res) => console.log(res))
+    $.ajax(
+      url: req_url
+      method: 'POST'
+      data: JSON.stringify({"name": name, "public": true})
+      contentType: 'application/json'
+      dataType: 'json'
+      headers: auth_header(@access)
+      success: (res) => callback(res))
+
+  post_tracks_to_playlist: (req_url, list_of_ids) =>
+    $.ajax(
+      url: req_url
+      method: 'POST'
+      data: JSON.stringify({"uris": list_of_ids})
+      contentType: 'application/json'
+      dataType: 'json'
+      headers:
+        'Authorization': 'Bearer ' + @access
+      succes: (res) => console.log("Added tracks"))
 
   process_playlists = (playlists_res) =>
     data = _.chain(playlists_res)

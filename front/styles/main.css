@@ -271,6 +271,17 @@ html, body {
   padding-left: 0;
 }
 
+.save-playlist {
+  float: right;
+}
+.save-playlist span {
+  margin-right: 10px;
+}
+.save-playlist input {
+  height: 31px;
+  margin-right: 10px;
+}
+
 .playlist {
   text-align: left;
   margin-top: 1em;

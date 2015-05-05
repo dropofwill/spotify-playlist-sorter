@@ -42,7 +42,7 @@ templates.track_head = _.template('''
 ''')
 
 templates.track = _.template('''
-  <tr>
+  <tr id="<%= track.uri %>">
     <td><%= track.name %></td>
     <td><%= track.artists %></td>
     <td><%= track.duration %></td>

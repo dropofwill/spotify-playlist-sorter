@@ -30,6 +30,7 @@
       scopes = config.scopes;
     }
     scope = scopes.join(" ");
+    console.log(scope);
     return url.format({
       protocol: 'https',
       hostname: host,

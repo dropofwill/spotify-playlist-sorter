@@ -74,6 +74,7 @@
     var state;
     state = utils.generate_random_string(16);
     res.cookie(config.state_key, state);
+    console.log(spotify.auth_builder(state));
     return res.redirect(spotify.auth_builder(state));
   });
 

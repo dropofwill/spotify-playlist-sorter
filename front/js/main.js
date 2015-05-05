@@ -11,6 +11,9 @@
     app.dom_playlists_list = $("#js-playlists-list");
     app.dom_playlist = $("#js-playlist");
     app.dom_playlist_table = $("#js-playlist-table");
+    app.dom_playlist_save = $("#js-save-playlist");
+    app.dom_playlist_save_name = $("#js-save-playlist-name");
+    app.dom_playlist_save_submit = $("#js-save-playlist-submit");
     app.$window.on('hashchange', app.page_load_logic);
     app.page_load_logic();
     app.$window.on('upm:playlistsLoad', function(e) {
@@ -21,12 +24,18 @@
     app.$window.on('upm:tracksLoad', function(e) {
       return app.spotify.get_echo_track_data(app.spotify.current_tracks);
     });
-    return app.$window.on('upm:echoLoad', function(e) {
+    app.$window.on('upm:echoLoad', function(e) {
       var content, data;
       data = app.spotify.merge_echo_spotify();
       content = app.spotify.render_playlist(data);
       console.log(data);
       return app.show_table(content);
+    });
+    return app.dom_playlist_save_submit.on("click", function(e) {
+      var name;
+      e.preventDefault();
+      name = app.dom_playlist_save_name.attr("value");
+      return app.spotify.create_playlist(name);
     });
   };
 
@@ -40,6 +49,8 @@
     if (app.should_show_playlist()) {
       ref = hash_to_user_and_playlist(), playlist_id = ref[0], user_id = ref[1];
       return app.spotify.get_playlist_tracks(playlist_id, user_id);
+    } else if (app.should_create_playlist()) {
+
     } else {
       return app.spotify.get_users_playlists();
     }
@@ -53,6 +64,22 @@
   app.should_show_playlist = function() {
     var ref;
     if (((ref = hash_to_user_and_playlist()) != null ? ref.length : void 0) === 2) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  app.should_show_playlists = function() {
+    if (get_hash_bang() === "you") {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  app.should_create_playlist = function() {
+    if (get_hash_bang() === "new") {
       return true;
     } else {
       return false;
@@ -82,7 +109,8 @@
     app.dom_playlists.addClass('hide');
     app.dom_playlist.removeClass('hide');
     app.dom_playlists_list.empty();
-    return app.dom_playlist_table.footable();
+    app.dom_playlist_table.footable();
+    return app.dom_playlist_save_name.attr("value", "upm" + (_.now()));
   };
 
 }).call(this);

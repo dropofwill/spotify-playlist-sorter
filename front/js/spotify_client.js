@@ -10,14 +10,19 @@
 
     function SpotifyClient() {
       this.merge_echo_spotify = bind(this.merge_echo_spotify, this);
+      this.post_tracks_to_playlist = bind(this.post_tracks_to_playlist, this);
+      this.post_create_playlist = bind(this.post_create_playlist, this);
       this.recursive_get_tracks = bind(this.recursive_get_tracks, this);
       this.recursive_get_playlists = bind(this.recursive_get_playlists, this);
       this.get_echo_audio_summary = bind(this.get_echo_audio_summary, this);
+      this.add_playlist_url = bind(this.add_playlist_url, this);
+      this.create_playlist_url = bind(this.create_playlist_url, this);
       this.playlist_tracks_url = bind(this.playlist_tracks_url, this);
       this.echo_tracks_url = bind(this.echo_tracks_url, this);
       this.render_playlist = bind(this.render_playlist, this);
       this.render_playlists = bind(this.render_playlists, this);
       this.get_echo_track_data = bind(this.get_echo_track_data, this);
+      this.create_playlist = bind(this.create_playlist, this);
       this.get_playlist_tracks = bind(this.get_playlist_tracks, this);
       this.get_users_playlists = bind(this.get_users_playlists, this);
       this.spotify_api_host = "https://api.spotify.com/v1";
@@ -30,6 +35,7 @@
       this.user_playlists = [];
       this.echo_tracks = [];
       this.spotify_tracks = [];
+      this.track_ids = [];
       this.key_list = ["C", "C&#x266F;", "D", "E&#x266d;", "E", "F", "F&#x266F;", "G", "A&#x266d;", "A", "B&#x266d;", "B"];
       this.mode_list = ["Min.", "Maj."];
     }
@@ -71,6 +77,34 @@
 
 
     /*
+     * Creates a playlist and upon completion add the current tracks to it
+     * Currently throwing a 403 despite correct user scopes, may be a bug in the
+     * Spotify API
+     */
+
+    SpotifyClient.prototype.create_playlist = function(playlist_id) {
+      var create_url, track_ids;
+      create_url = this.create_playlist_url();
+      track_ids = _.map($('#js-playlist-table tbody tr'), function(el) {
+        return $(el).attr("id");
+      });
+      console.log(track_ids);
+      return this.post_create_playlist(create_url, playlist_id, (function(_this) {
+        return function(res) {
+          var tracks_url;
+          console.log(res);
+          tracks_url = _this.add_playlist_url(res.id);
+          return _this.post_tracks_to_playlist(tracks_url, track_ids);
+        };
+      })(this));
+    };
+
+    SpotifyClient.prototype.logger = function(res) {
+      return console.log(res, this.current_tracks);
+    };
+
+
+    /*
      * Reduce the spotify response to just an array of track objects
      * Extract just the track_ids
      * Make an ajax request to echonest for the meta data
@@ -78,10 +112,13 @@
      */
 
     SpotifyClient.prototype.get_echo_track_data = function(spotify_playlist_res) {
-      var track_ids;
       this.spotify_tracks = reduce_spotify_tracks(spotify_playlist_res);
-      track_ids = _.pluck(this.spotify_tracks, 'uri');
-      return this.get_echo_audio_summary(this.echo_tracks_url(track_ids));
+      this.track_ids = _.pluck(this.spotify_tracks, 'uri');
+      return this.get_echo_audio_summary(this.echo_tracks_url(this.track_ids));
+    };
+
+    SpotifyClient.prototype.pluck_ids = function(tracks) {
+      return _.pluck(tracks, 'uri');
     };
 
     SpotifyClient.prototype.render_playlists = function(playlists_res) {
@@ -130,6 +167,14 @@
       return api_url(this.spotify_api_host + "/users/" + user_id + "/playlists/" + playlist_id + "/tracks", qs_obj);
     };
 
+    SpotifyClient.prototype.create_playlist_url = function() {
+      return api_url(this.spotify_api_host + "/users/" + this.user_id + "/playlists");
+    };
+
+    SpotifyClient.prototype.add_playlist_url = function(playlist_id) {
+      return api_url(this.spotify_api_host + "/users/" + this.user_id + "/playlists/" + playlist_id + "/tracks");
+    };
+
     SpotifyClient.prototype.get_echo_audio_summary = function(req_url) {
       return $.ajax({
         url: req_url,
@@ -171,6 +216,46 @@
             } else {
               return $(window).trigger('upm:tracksLoad');
             }
+          };
+        })(this)
+      });
+    };
+
+    SpotifyClient.prototype.post_create_playlist = function(req_url, name, callback) {
+      console.log(req_url);
+      return $.ajax({
+        url: req_url,
+        method: 'POST',
+        data: JSON.stringify({
+          "name": name,
+          "public": true
+        }),
+        contentType: 'application/json',
+        dataType: 'json',
+        headers: auth_header(this.access),
+        success: (function(_this) {
+          return function(res) {
+            return callback(res);
+          };
+        })(this)
+      });
+    };
+
+    SpotifyClient.prototype.post_tracks_to_playlist = function(req_url, list_of_ids) {
+      return $.ajax({
+        url: req_url,
+        method: 'POST',
+        data: JSON.stringify({
+          "uris": list_of_ids
+        }),
+        contentType: 'application/json',
+        dataType: 'json',
+        headers: {
+          'Authorization': 'Bearer ' + this.access
+        },
+        succes: (function(_this) {
+          return function(res) {
+            return console.log("Added tracks");
           };
         })(this)
       });

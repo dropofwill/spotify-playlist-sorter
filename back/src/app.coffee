@@ -49,6 +49,7 @@ app.get('/proposal', (req, res) ->
 app.get('/login', (req, res) ->
   state = utils.generate_random_string(16)
   res.cookie(config.state_key, state)
+  console.log(spotify.auth_builder(state))
   res.redirect(spotify.auth_builder(state)))
 
 ###

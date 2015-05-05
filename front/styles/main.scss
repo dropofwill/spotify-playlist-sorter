@@ -35,6 +35,19 @@ html,body {
   padding-left: 0;
 }
 
+.save-playlist {
+  float: right;
+
+  span {
+    margin-right: 10px;
+  }
+
+  input {
+    height: 31px;
+    margin-right: 10px;
+  }
+}
+
 .playlist {
   text-align: left;
   margin-top: 1em;

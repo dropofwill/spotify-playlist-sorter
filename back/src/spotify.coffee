@@ -13,6 +13,7 @@ utils   = require('./utils')
 spotify.auth_builder = (state, host=config.accounts_host,
                         path=config.auth_path, scopes=config.scopes) ->
   scope = scopes.join(" ")
+  console.log(scope)
 
   url.format(
     protocol: 'https'
