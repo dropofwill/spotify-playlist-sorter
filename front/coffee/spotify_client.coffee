@@ -74,7 +74,6 @@ class SpotifyClient
   get_echo_audio_summary: (req_url) =>
     $.ajax(
         url: req_url
-        method: 'POST'
         success: (res) =>
           @echo_tracks = res.response.songs
           $(window).trigger('upm:echoLoad'))

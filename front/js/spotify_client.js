@@ -118,7 +118,6 @@
     SpotifyClient.prototype.get_echo_audio_summary = function(req_url) {
       return $.ajax({
         url: req_url,
-        method: 'POST',
         success: (function(_this) {
           return function(res) {
             _this.echo_tracks = res.response.songs;
