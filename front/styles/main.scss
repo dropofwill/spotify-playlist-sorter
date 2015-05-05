@@ -4,7 +4,7 @@ $brand: #0087E3;
 $high:  #81b900;
 $black: #000;
 $dark:  #333;
-$light: #ccc;
+$light: #eee;
 $white: #fff;
 
 @import "front/styles/fonts";
@@ -38,6 +38,19 @@ html,body {
 .playlist {
   text-align: left;
   margin-top: 1em;
+  border-collapse: collapse;
+
+  thead tr {
+    border-bottom: 1px $dark solid;
+  }
+
+  tr:nth-child(even) {
+    background: $light;
+  }
+
+  td {
+    padding: 2px;
+  }
 }
 
 header {

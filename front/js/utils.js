@@ -106,6 +106,29 @@
     });
   };
 
+
+  /*
+   * Convert a string of seconds to a nicely formatted 'minutes:seconds' string
+   */
+
+  window.seconds_to_s = function(time) {
+    var minutes, seconds;
+    seconds = parseFloat(time);
+    minutes = Math.floor(seconds / 60);
+    seconds = Math.floor(seconds % 60);
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    return minutes + ":" + seconds;
+  };
+
+
+  /*
+   * Convert a string decimal to a nicely formatted '20%' string
+   */
+
+  window.decimal_to_per = function(value) {
+    return (Math.round(value * 100)) + "%";
+  };
+
 }).call(this);
 
 //# sourceMappingURL=utils.js.map

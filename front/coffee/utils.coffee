@@ -63,3 +63,19 @@ window.get_hash_pairs = ->
       return [decodeURIComponent(kv[0]), decodeURIComponent(kv[1])]
     else
       return [decodeURIComponent(kv[0]), null])
+
+###
+# Convert a string of seconds to a nicely formatted 'minutes:seconds' string
+###
+window.seconds_to_s = (time) ->
+  seconds = parseFloat(time)
+  minutes = Math.floor(seconds / 60)
+  seconds = Math.floor(seconds % 60)
+  seconds = if seconds < 10 then "0#{seconds}" else seconds
+  "#{minutes}:#{seconds}"
+ 
+###
+# Convert a string decimal to a nicely formatted '20%' string
+###
+window.decimal_to_per = (value) ->
+  "#{Math.round(value * 100)}%"

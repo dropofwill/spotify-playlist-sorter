@@ -20,6 +20,7 @@ class SpotifyClient
     
     @key_list = [ "C", "C&#x266F;", "D", "E&#x266d;", "E", "F", "F&#x266F;",
                   "G", "A&#x266d;", "A", "B&#x266d;", "B"]
+    @mode_list = [ "Min.", "Maj." ]
 
   ###
   # Retrieve all of the logged in users' playlists, making multiple requests as
@@ -134,8 +135,12 @@ class SpotifyClient
       _.forEach(o, (v,k) ->
         switch k
           when 'key'      then _.set(o, k, self.key_list[v])
+          when 'mode'     then _.set(o, k, self.mode_list[v])
           when 'artists'  then _.set(o, k, _.get(_.first(v), 'name'))
-          # when 'duration' then _.set(o, k, 
+          when 'duration' then _.set(o, k, seconds_to_s(v))
+          when 'tempo'    then _.set(o, k, parseInt(v))
+          when 'valence', 'energy', 'danceability', 'acousticness', 'liveness'
+             _.set(o, k, decimal_to_per(v))
         )
       )
 

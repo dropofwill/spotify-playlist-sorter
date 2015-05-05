@@ -31,6 +31,7 @@
       this.echo_tracks = [];
       this.spotify_tracks = [];
       this.key_list = ["C", "C&#x266F;", "D", "E&#x266d;", "E", "F", "F&#x266F;", "G", "A&#x266d;", "A", "B&#x266d;", "B"];
+      this.mode_list = ["Min.", "Maj."];
     }
 
 
@@ -205,8 +206,20 @@
           switch (k) {
             case 'key':
               return _.set(o, k, self.key_list[v]);
+            case 'mode':
+              return _.set(o, k, self.mode_list[v]);
             case 'artists':
               return _.set(o, k, _.get(_.first(v), 'name'));
+            case 'duration':
+              return _.set(o, k, seconds_to_s(v));
+            case 'tempo':
+              return _.set(o, k, parseInt(v));
+            case 'valence':
+            case 'energy':
+            case 'danceability':
+            case 'acousticness':
+            case 'liveness':
+              return _.set(o, k, decimal_to_per(v));
           }
         });
       });

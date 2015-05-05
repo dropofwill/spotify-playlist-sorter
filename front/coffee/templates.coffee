@@ -28,8 +28,9 @@ templates.track_head = _.template('''
     <th>Title</th>
     <th>Artist</th>
     <th>Dur.</th>
-    <th>Tempo</th>
+    <th>BPM</th>
     <th>Key</th>
+    <th>Mode</th>
     <th>Sig.</th>
     <th>Pop.</th>
     <th>Val.</th>
@@ -47,6 +48,7 @@ templates.track = _.template('''
     <td><%= track.duration %></td>
     <td><%= track.tempo %></td>
     <td><%= track.key %></td>
+    <td><%= track.mode %></td>
     <td><%= track.time_signature %></td>
     <td><%= track.popularity %></td>
     <td><%= track.valence %></td>
