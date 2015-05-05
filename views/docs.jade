@@ -5,6 +5,13 @@ block content
   h1 upm: docs
   h2 sort your Spotify playlists based on acoustic features
 
+  h2 Test account
+  p If you don't have a Spotify account I created a test account with the following credentials:
+
+  code.
+    Username: upm-api
+    Password: upm-api
+
   h2 Architecture
   pre.
     ├── back
@@ -40,7 +47,7 @@ block content
 
   p Since I needed to do OAuth for the Spotify API, I decided against battling gibson and PHP and made an Node.js/Express server to handle authentication. Basically the server handles the OAuth login and callback from the Spotify and then serves the static templates.
 
-  p The client saves the keys from the server in sessionStorage so that the client can do all the actual data gathering. Echonest just API key and no OAuth.
+  p The client saves the keys from the server in sessionStorage so that the client can do all the actual data gathering. Echonest uses just API key and no OAuth, so all that can be handled from the client.
 
   h2 APIs used
   ul
@@ -58,8 +65,9 @@ block content
     li Saved access tokens in HTML5 sessionStorage, to preserve session state
     li Used hashbang routing to preserve back button functionality
     li Implemented recursive method for parsing paginated API responses
+    li Functional programming to parse all the data responses
+    li Implemented an event based system for multiple ajax requests
     li Used client side templating to describe the way JSON responses and HTML should be integrated more declaratively than simple string concatentation.
-    li Implemented the drag-and-drop api on the 'tr' elements of a table
 
   h2 Credits
   h3 Frontend

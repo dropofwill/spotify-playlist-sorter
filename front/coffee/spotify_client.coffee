@@ -105,6 +105,9 @@ class SpotifyClient
     tracks_qs = "&track_id=#{track_ids.join("&track_id=")}"
     api_url("#{@echo_api_host}/song/profile", base) + tracks_qs
 
+  ###
+  # Generate the urls for each of the API requests
+  ###
   users_playlists_url: (user_id, qs_obj=null) ->
     api_url("#{@spotify_api_host}/users/#{user_id}/playlists", qs_obj)
 
@@ -119,6 +122,9 @@ class SpotifyClient
   add_playlist_url: (playlist_id) =>
     api_url("#{@spotify_api_host}/users/#{@user_id}/playlists/#{playlist_id}/tracks")
 
+  ###
+  # Get audio summary data from the Echonest API
+  ###
   get_echo_audio_summary: (req_url) =>
     $.ajax(
         url: req_url
@@ -126,6 +132,12 @@ class SpotifyClient
           @echo_tracks = res.response.songs
           $(window).trigger('upm:echoLoad'))
 
+  ###
+  # As long as there is another page of playlists and we aren't at our limit
+  # make another request.
+  # Save the result in an instance variable this.user_playlists
+  # When its done fire the custom event 'upm:playlistsLoad'
+  ###
   recursive_get_playlists: (req_url) =>
     $.ajax(
         url: req_url
@@ -137,6 +149,12 @@ class SpotifyClient
           else
             $(window).trigger('upm:playlistsLoad'))
 
+  ###
+  # As long as there is another page of tracks and we aren't at our limit
+  # make another request.
+  # Save the result in an instance variable this.current_tracks
+  # When its done fire the custom event 'upm:tracksLoad'
+  ###
   recursive_get_tracks: (req_url) =>
     $.ajax(
       url: req_url
@@ -148,6 +166,11 @@ class SpotifyClient
         else
           $(window).trigger('upm:tracksLoad'))
 
+  ###
+  # Post request to create a new *empty* playlist of the given name
+  # Takes a callback function that fires on completion since you probably
+  # want to add some tracks.
+  ###
   post_create_playlist: (req_url, name, callback) =>
     $.ajax(
       url: req_url
@@ -158,6 +181,10 @@ class SpotifyClient
       headers: auth_header(@access)
       success: (res) => callback(res))
 
+  ###
+  # Post request to create add a list of tracks (based on the spotify uri)
+  # to a given playlist
+  ###
   post_tracks_to_playlist: (req_url, list_of_ids) =>
     $.ajax(
       url: req_url
@@ -169,18 +196,29 @@ class SpotifyClient
         'Authorization': 'Bearer ' + @access
       succes: (res) => console.log("Added tracks"))
 
+  ###
+  # Parse the json response to only have objects with the name, id, and owner
+  # attributes to be passed to the view
+  ###
   process_playlists = (playlists_res) =>
     data = _.chain(playlists_res)
       .flatten()
       .map((playlist) -> _.pick(playlist, 'name', 'id', 'owner'))
       .value()
 
+  ###
+  # Parse the json response to only have the track objects
+  ###
   reduce_spotify_tracks = (playlist_res) ->
     _.chain(playlist_res)
         .flatten()
         .map((track) -> _.get(track, 'track'))
         .value()
 
+  ###
+  # Merge responses from echonest and spotify and convert data into a more
+  # human-readable format for the data table.
+  ###
   merge_echo_spotify: (spotify_t=@spotify_tracks, echo_t=@echo_tracks) =>
     self = this
     merged = _.merge(spotify_t,
@@ -215,53 +253,3 @@ class SpotifyClient
     endpoint
 
 app.SpotifyClient = SpotifyClient
-
-# userProfileSource = document.getElementById('user-profile-template').innerHTML
-# userProfileTemplate = Handlebars.compile(userProfileSource)
-# userProfilePlaceholder = document.getElementById('user-profile')
-#
-# oauthSource = document.getElementById('oauth-template').innerHTML
-# oauthTemplate = Handlebars.compile(oauthSource)
-# oauthPlaceholder = document.getElementById('oauth')
-
-# params = getHashParams()
-
-# access_token = params.access_token
-# refresh_token = params.refresh_token
-# error = params.error
-#
-# if (error)
-#   alert('There was an error during the authentication')
-# else
-#   if (access_token)
-#     # render oauth info
-#     oauthPlaceholder.innerHTML = oauthTemplate({
-#       access_token: access_token,
-#       refresh_token: refresh_token
-#     })
-#
-#     $.ajax({
-#         url: 'https://api.spotify.com/v1/me',
-#         headers: { 'Authorization': 'Bearer ' + access_token },
-#         success: (response) ->
-#           userProfilePlaceholder.innerHTML = userProfileTemplate(response)
-#
-#           $('#login').hide()
-#           $('#loggedin').show() })
-#   else
-#       # render initial screen
-#       $('#login').show()
-#       $('#loggedin').hide()
-#
-#   document.getElementById('obtain-new-token')
-#     .addEventListener('click', ->
-#     $.ajax({
-#       url: '/refresh_token',
-#       data: { 'refresh_token': refresh_token }
-#     })
-#     .done((data) ->
-#       access_token = data.access_token
-#       oauthPlaceholder.innerHTML = oauthTemplate({
-#         access_token: access_token,
-#         refresh_token: refresh_token
-#       })), false)

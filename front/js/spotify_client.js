@@ -166,6 +166,11 @@
       return api_url(this.echo_api_host + "/song/profile", base) + tracks_qs;
     };
 
+
+    /*
+     * Generate the urls for each of the API requests
+     */
+
     SpotifyClient.prototype.users_playlists_url = function(user_id, qs_obj) {
       if (qs_obj == null) {
         qs_obj = null;
@@ -188,6 +193,11 @@
       return api_url(this.spotify_api_host + "/users/" + this.user_id + "/playlists/" + playlist_id + "/tracks");
     };
 
+
+    /*
+     * Get audio summary data from the Echonest API
+     */
+
     SpotifyClient.prototype.get_echo_audio_summary = function(req_url) {
       return $.ajax({
         url: req_url,
@@ -199,6 +209,14 @@
         })(this)
       });
     };
+
+
+    /*
+     * As long as there is another page of playlists and we aren't at our limit
+     * make another request.
+     * Save the result in an instance variable this.user_playlists
+     * When its done fire the custom event 'upm:playlistsLoad'
+     */
 
     SpotifyClient.prototype.recursive_get_playlists = function(req_url) {
       return $.ajax({
@@ -217,6 +235,14 @@
       });
     };
 
+
+    /*
+     * As long as there is another page of tracks and we aren't at our limit
+     * make another request.
+     * Save the result in an instance variable this.current_tracks
+     * When its done fire the custom event 'upm:tracksLoad'
+     */
+
     SpotifyClient.prototype.recursive_get_tracks = function(req_url) {
       return $.ajax({
         url: req_url,
@@ -233,6 +259,13 @@
         })(this)
       });
     };
+
+
+    /*
+     * Post request to create a new *empty* playlist of the given name
+     * Takes a callback function that fires on completion since you probably
+     * want to add some tracks.
+     */
 
     SpotifyClient.prototype.post_create_playlist = function(req_url, name, callback) {
       return $.ajax({
@@ -252,6 +285,12 @@
         })(this)
       });
     };
+
+
+    /*
+     * Post request to create add a list of tracks (based on the spotify uri)
+     * to a given playlist
+     */
 
     SpotifyClient.prototype.post_tracks_to_playlist = function(req_url, list_of_ids) {
       return $.ajax({
@@ -273,6 +312,12 @@
       });
     };
 
+
+    /*
+     * Parse the json response to only have objects with the name, id, and owner
+     * attributes to be passed to the view
+     */
+
     process_playlists = function(playlists_res) {
       var data;
       return data = _.chain(playlists_res).flatten().map(function(playlist) {
@@ -280,11 +325,22 @@
       }).value();
     };
 
+
+    /*
+     * Parse the json response to only have the track objects
+     */
+
     reduce_spotify_tracks = function(playlist_res) {
       return _.chain(playlist_res).flatten().map(function(track) {
         return _.get(track, 'track');
       }).value();
     };
+
+
+    /*
+     * Merge responses from echonest and spotify and convert data into a more
+     * human-readable format for the data table.
+     */
 
     SpotifyClient.prototype.merge_echo_spotify = function(spotify_t, echo_t) {
       var merged, self;
