@@ -20,8 +20,11 @@
     });
     app.$window.on('upm:tracksLoad', function(e) {
       var data;
-      data = app.spotify.get_echo_track_data(app.spotify.current_tracks);
-      return console.log(data);
+      return data = app.spotify.get_echo_track_data(app.spotify.current_tracks);
+    });
+    app.$window.on('upm:echoLoad', function(e) {
+      console.log(app.spotify.spotify_tracks);
+      return console.log(app.spotify.echo_tracks);
     });
     return app.$window.on('hashchange', app.page_load_logic);
   };

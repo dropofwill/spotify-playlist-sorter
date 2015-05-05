@@ -13,15 +13,21 @@ window.onload = ->
   app.$window.on('upm:playlistsLoad', (e) ->
     content = app.spotify.render_playlists(app.spotify.user_playlists)
     app.playlists_list.append(content)
-    # console.log($('.js-playlist-link'))
 
     $('.js-playlist-link').on('click', (ev) ->
       # ev.preventDefault()
-      console.log(ev.currentTarget.id)))
+      console.log(ev.currentTarget.id)
+    )
+  )
 
   app.$window.on('upm:tracksLoad', (e) ->
     data = app.spotify.get_echo_track_data(app.spotify.current_tracks)
-    console.log(data))
+  )
+
+  app.$window.on('upm:echoLoad', (e) ->
+    console.log(app.spotify.spotify_tracks)
+    console.log(app.spotify.echo_tracks)
+  )
 
   app.$window.on('hashchange', app.page_load_logic)
 

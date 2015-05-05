@@ -8,10 +8,13 @@ class SpotifyClient
     @spotify_api_host = "https://api.spotify.com/v1"
     @echo_api_host    = "https://developer.echonest.com/api/v4"
 
-    @access  = get_access()
-    @refresh = get_refresh()
-    @user_id = get_user()
+    @access   = get_access()
+    @echo_key = get_echo()
+    @refresh  = get_refresh()
+    @user_id  = get_user()
     @user_playlists = []
+    @echo_tracks = []
+    @spotify_tracks = []
 
   ###
   # Retrieve all of the logged in users' playlists, making multiple requests as
@@ -33,16 +36,32 @@ class SpotifyClient
     init_req = @playlist_tracks_url(uid, playlist_id, limit: 100)
     @recursive_get_tracks(init_req)
 
+  ###
+  # Reduce the spotify response to just an array of track objects
+  # Extract just the track_ids
+  # Make an ajax request to echonest for the meta data
+  # Triggers the 'upm:echoLoad' event when finished
+  ###
   get_echo_track_data: (spotify_playlist_res) =>
-    data = _.chain(spotify_playlist_res)
-      .flatten()
-      .map((track) -> _.get(track, 'track'))
-      .value()
+    @spotify_tracks = reduce_spotify_tracks(spotify_playlist_res)
+    track_ids = _.pluck(@spotify_tracks, 'uri')
+    @get_echo_audio_summary(@echo_tracks_url(track_ids))
 
   render_playlists: (playlists_res) =>
     app.templates.user_playlists(process_playlists(playlists_res))
 
-
+  ###
+  # Can't stringify track_ids because they would be duplicate hash keys
+  #
+  # http://developer.echonest.com/api/v4/song/profile?api_key=DDP9J5HAUE4JGKHOS&format=json&track_id=spotify:track:3L7BcXHCG8uT92viO6Tikl&track_id=spotify:track:4sgd8Oe36YeA1YpCzPBjiC&bucket=audio_summary
+  ###
+  echo_tracks_url: (track_ids) =>
+    base =
+      api_key: @echo_key
+      format: 'json'
+      bucket: 'audio_summary'
+    tracks_qs = "&track_id=#{track_ids.join("&track_id=")}"
+    api_url("#{@echo_api_host}/song/profile", base) + tracks_qs
 
   users_playlists_url: (user_id, qs_obj=null) ->
     api_url("#{@spotify_api_host}/users/#{user_id}/playlists", qs_obj)
@@ -52,13 +71,20 @@ class SpotifyClient
       "#{@spotify_api_host}/users/#{user_id}/playlists/#{playlist_id}/tracks",
       qs_obj)
 
+  get_echo_audio_summary: (req_url) =>
+    $.ajax(
+        url: req_url
+        method: 'POST'
+        success: (res) =>
+          @echo_tracks = res.response.songs
+          $(window).trigger('upm:echoLoad'))
+
   recursive_get_playlists: (req_url) =>
     $.ajax(
         url: req_url
         headers: auth_header(@access)
         success: (res) =>
           @user_playlists.push(res.items)
-          # console.log(@user_playlists)
           if res.next?
             @recursive_get_playlists(res.next)
           else
@@ -69,7 +95,6 @@ class SpotifyClient
       url: req_url
       headers: auth_header(@access)
       success: (res) =>
-        # console.log(res)
         @current_tracks.push(res.items)
         if res.next?
           @recursive_get_tracks(res.next)
@@ -81,6 +106,13 @@ class SpotifyClient
       .flatten()
       .map((playlist) -> _.pick(playlist, 'name', 'id', 'owner'))
       .value()
+
+  reduce_spotify_tracks = (playlist_res) ->
+    _.chain(playlist_res)
+        .flatten()
+        .map((track) -> _.get(track, 'track'))
+        .value()
+
 
   process_playlist = (playlists_res) =>
 
